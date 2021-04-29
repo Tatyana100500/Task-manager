@@ -1,0 +1,67 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "[![Actions Status](https://github.com/Tatyana100500/backend-project-lvl4/workflows/hexlet-check/badge.svg)](https://github.com/Tatyana100500/backend-project-lvl4/actions)",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "jest",
+    "prebuild": "rm -rf dist",
+    "build-configs": "babel webpack.config.babel.js --out-dir dist",
+    "build-db": "cp knexfile.js dist && NODE_ENV=production knex migrate:latest",
+    "build-server": "NODE_ENV=production babel server --out-dir dist/server --source-maps inline && cp -r server/views dist/server/views",
+    "build-frontend": "NODE_ENV=production webpack --mode production",
+    "build": "npm run build-configs && npm run build-frontend && npm run build-server && npm run build-db",
+    "start": "NODE_ENV=production node dist/server/bin/server.js"
+  },
+  "engines": {
+    "node": "14.x"
+  },
+  "jest": {
+    "modulePathIgnorePatterns": [
+      "<rootDir>/__tests__/helpers/"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tatyana100500/backend-project-lvl4.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tatyana100500/backend-project-lvl4/issues"
+  },
+  "homepage": "https://github.com/Tatyana100500/backend-project-lvl4#readme",
+  "dependencies": {
+    "bootstrap": "^3.4.1",
+    "dotenv": "^8.2.0",
+    "fastify": "^3.15.0",
+    "fastify-error-page": "^4.0.0",
+    "fastify-flash": "^2.0.2",
+    "fastify-formbody": "^5.0.0",
+    "fastify-method-override": "^1.5.4",
+    "fastify-objectionjs": "^0.3.1",
+    "fastify-passport": "^0.4.2",
+    "fastify-reverse-routes": "^3.0.0",
+    "fastify-secure-session": "^2.3.1",
+    "fastify-sensible": "^3.1.1",
+    "fastify-static": "^4.0.1",
+    "i18next": "^20.2.2",
+    "jquery": "^3.6.0",
+    "knex": "^0.21.19",
+    "lodash": "^4.17.21",
+    "objection": "^2.2.15",
+    "objection-unique": "^1.2.1",
+    "pino-pretty": "^4.7.1",
+    "point-of-view": "^4.14.0",
+    "pug": "^3.0.2",
+    "qs": "^6.10.1",
+    "sqlite3": "^5.0.2",
+    "webpack": "^5.36.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.13.16",
+    "@babel/core": "^7.13.16",
+    "@babel/node": "^7.13.13",
+    "mini-css-extract-plugin": "^1.5.1"
+  }
+}
