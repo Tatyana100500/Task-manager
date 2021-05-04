@@ -49,6 +49,7 @@
     "jquery": "^3.6.0",
     "knex": "^0.21.19",
     "lodash": "^4.17.21",
+    "mini-css-extract-plugin": "^1.4.1",
     "objection": "^2.2.15",
     "objection-unique": "^1.2.1",
     "pino-pretty": "^4.7.1",
