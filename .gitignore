@@ -1,6 +1,7 @@
 .idea/
 .vscode/
 node_modules/
+node-js-getting-started/
 build/
 dist/
 tmp/
