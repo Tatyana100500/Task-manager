@@ -1,7 +1,10 @@
-const precss = require('precss');
-
 module.exports = {
-  plugins: [
-    precss
-  ],
-};
+    plugins: [
+      [
+        "postcss-preset-env",
+        {
+          // Options
+        },
+      ],
+    ],
+  };
