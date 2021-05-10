@@ -102,7 +102,7 @@ const registerPlugins = (app) => {
       path: '/',
     },
   });
-  app.register(fastifyFlash);
+  //app.register(fastifyFlash);
   fastifyPassport.registerUserDeserializer(
     (user) => app.objection.models.user.query().findById(user.id),
   );
