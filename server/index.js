@@ -1,5 +1,5 @@
 // @ts-check
-
+import _ from 'lodash';
 import dotenv from 'dotenv';
 import path from 'path';
 import fastify from 'fastify';
@@ -10,7 +10,7 @@ import fastifyFormbody from 'fastify-formbody';
 import fastifySecureSession from 'fastify-secure-session';
 import fastifyPassport from 'fastify-passport';
 import fastifySensible from 'fastify-sensible';
-// import fastifyFlash from 'fastify-flash';
+import fastifyFlash from 'fastify-flash';
 import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
@@ -20,7 +20,9 @@ import i18next from 'i18next';
 import ru from './locales/ru.js';
 // @ts-ignore
 import webpackConfig from '../webpack.config.babel.js';
-
+import Rollbar from 'rollbar';
+import fastifyAuth from 'fastify-auth';
+import createError from 'http-errors';
 import addRoutes from './routes/index.js';
 import getHelpers from './helpers/index.js';
 import knexConfig from '../knexfile.js';
@@ -31,6 +33,11 @@ dotenv.config();
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
 const isDevelopment = mode === 'development';
+const rollbar = new Rollbar({
+  accessToken: process.env.ROLLBAR,
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+});
 
 const setUpViews = (app) => {
   const { devServer } = webpackConfig;
@@ -95,7 +102,7 @@ const registerPlugins = (app) => {
       path: '/',
     },
   });
-
+  app.register(fastifyFlash);
   fastifyPassport.registerUserDeserializer(
     (user) => app.objection.models.user.query().findById(user.id),
   );
@@ -134,6 +141,21 @@ export default () => {
   setUpStaticAssets(app);
   addRoutes(app);
   addHooks(app);
-
+  app.decorate('authCheck', async (request, reply) => {
+    if (!request.isSigned) {
+      request.flash('error', i18next.t('views.messages.notLogged'));
+      reply.redirect(app.reverse('root'));
+    }
+  })
+    .register(fastifyAuth)
+    .after(() => {
+      addRoutes(app);
+    });
+  if (mode === 'production') {
+    app.setErrorHandler((error, req, reply) => {
+      rollbar.error(error);
+      reply.send(error);
+    });
+  }
   return app;
 };
