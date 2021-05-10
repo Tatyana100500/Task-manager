@@ -9,9 +9,15 @@ const getFixtureData = (filename) => JSON.parse(readFixture(filename));
 
 export const getTestData = () => getFixtureData('testData.json');
 
-export const prepareData = async (app) => {
-  const { knex } = app.objection;
-
-  // получаем данные из фикстур и заполняем БД
-  await knex('users').insert(getFixtureData('users.json'));
+export const prepareData = async (app, user) => {
+  const response = await app.inject({
+    method: 'POST',
+    url: '/login',
+    payload: {
+      email: user.email,
+      password: user.password,
+    },
+  });
+  const [sessionCookies] = response.cookies;
+  return { session: sessionCookies.value };
 };
