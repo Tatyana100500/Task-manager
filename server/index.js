@@ -10,7 +10,7 @@ import fastifyFormbody from 'fastify-formbody';
 import fastifySecureSession from 'fastify-secure-session';
 import fastifyPassport from 'fastify-passport';
 import fastifySensible from 'fastify-sensible';
-//import fastifyFlash from 'fastify-flash';
+import fastifyFlash from 'fastify-flash';
 import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
@@ -21,7 +21,7 @@ import ru from './locales/ru.js';
 // @ts-ignore
 import webpackConfig from '../webpack.config.babel.js';
 import Rollbar from 'rollbar';
-//import fastifyAuth from 'fastify-auth';
+import fastifyAuth from 'fastify-auth';
 //import createError from 'http-errors';
 import addRoutes from './routes/index.js';
 import getHelpers from './helpers/index.js';
@@ -102,7 +102,8 @@ const registerPlugins = (app) => {
       path: '/',
     },
   });
-  //app.register(fastifyFlash);
+  app.register(fastifyFlash);
+  app.register(fastifyAuth);
   fastifyPassport.registerUserDeserializer(
     (user) => app.objection.models.user.query().findById(user.id),
   );
