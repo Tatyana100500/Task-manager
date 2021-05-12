@@ -1,31 +1,38 @@
 // @ts-check
 
-import i18next from 'i18next';
+import encrypt from '../lib/secure';
 
 export default (app) => {
-  app
-    .get('/session/new', { name: 'newSession' }, (req, reply) => {
-      const signInForm = {};
-      reply.render('session/new', { signInForm });
-    })
-    .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
-      if (err) {
-        return app.httpErrors.internalServerError(err);
+  app.get('/login', { name: 'login' }, async (reuest, reply) => {
+    reply.render('login');
+  });
+
+  app.post('/login', { name: 'newSession' }, async (request, reply) => {
+    try {
+      const [user] = await app.objection.models.user
+        .query()
+        .select()
+        .where({
+          email: request.body.email,
+        });
+      const password = encrypt(request.body.password);
+      if (!user || password !== user.passwordDigest) {
+        request.flash('error', 'Bad username or password');
+        reply.redirect(app.reverse('login'));
       }
-      if (!user) {
-        const signInForm = req.body.data;
-        const errors = {
-          email: [{ message: i18next.t('flash.session.create.error') }],
-        };
-        return reply.render('session/new', { signInForm, errors });
+      if (password === user.passwordDigest) {
+        request.session.set('userId', user.id);
+        request.flash('success', `Welcome, ${user.firstName}`);
+        reply.redirect(app.reverse('root'));
       }
-      await req.logIn(user);
-      req.flash('success', i18next.t('flash.session.create.success'));
-      return reply.redirect(app.reverse('root'));
-    }))
-    .delete('/session', (req, reply) => {
-      req.logOut();
-      req.flash('info', i18next.t('flash.session.delete.success'));
-      reply.redirect(app.reverse('root'));
-    });
+    } catch {
+      request.flash('error', 'Login error!');
+      reply.redirect(app.reverse('login'));
+    }
+  });
+
+  app.delete('/session', { name: 'deleteSession' }, async (request, reply) => {
+    request.session.delete();
+    reply.redirect(app.reverse('root'));
+  });
 };
