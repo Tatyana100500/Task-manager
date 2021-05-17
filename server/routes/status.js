@@ -6,11 +6,11 @@ export default (app) => {
     reply.render('statuses/list', { statuses });
   });
 
-  app.get('/statuses/new', { name: 'newStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.get('/statuses/new', { name: 'newStatus',preHandler: app.authCheck }, async (request, reply) => {
     reply.render('statuses/new');
   });
 
-  app.get('/statuses/:id/edit', { name: 'editStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.get('/statuses/:id/edit', { name: 'editStatus', preHandler: app.authCheck }, async (request, reply) => {
     try {
       const status = await app.objection.models.status
         .query()
@@ -25,7 +25,7 @@ export default (app) => {
     }
   });
 
-  app.post('/statuses', { name: 'addStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.post('/statuses', { name: 'addStatus', preHandler: app.authCheck }, async (request, reply) => {
     try {
       await app.objection.models.status.query().insert(request.body.status);
       request.flash('success', i18next.t('views.pages.statuses.add.success'));
@@ -36,7 +36,7 @@ export default (app) => {
     }
   });
 
-  app.delete('/statuses/:id', { name: 'deleteStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.delete('/statuses/:id', { name: 'deleteStatus', preHandler: app.authCheck }, async (request, reply) => {
     try {
       const relatedTasks = await app.objection.models.status.relatedQuery('tasks').for(request.params.id);
       if (relatedTasks.length > 0) {
@@ -53,7 +53,7 @@ export default (app) => {
     }
   });
 
-  app.patch('/statuses/:id', { name: 'updateStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.patch('/statuses/:id', { name: 'updateStatus', preHandler: app.authCheck }, async (request, reply) => {
     try {
       const status = await app.objection.models.status
         .query()
