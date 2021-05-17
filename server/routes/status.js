@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 
 export default (app) => {
-  app.get('/statuses', { name: 'statuses', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.get('/statuses', { name: 'statuses', preHandler: app.authCheck }, async (request, reply) => {
     const statuses = await app.objection.models.status.query();
     reply.render('statuses/list', { statuses });
   });
