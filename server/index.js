@@ -85,6 +85,7 @@ const registerPlugins = (app) => {
     },
   });
   app.register(fastifyFlash);
+  app.register(fastifyAuth);
   app.register(fastifyMethodOverride);
   app.register(fastifyObjectionjs, {
     knexConfig: knexConfig[mode],
@@ -121,7 +122,6 @@ export default () => {
       reply.redirect(app.reverse('root'));
     }
   })
-    .register(fastifyAuth)
     .after(() => {
       addRoutes(app);
     });
