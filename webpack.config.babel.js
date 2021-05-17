@@ -1,5 +1,6 @@
 import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+const webpack = require('webpack');
 
 const mode = process.env.NODE_ENV || 'development';
 
@@ -36,5 +37,10 @@ module.exports = {
       },
     ],
   },
-  plugins: [new MiniCssExtractPlugin()],
+  plugins: [new MiniCssExtractPlugin(), new webpack.ProvidePlugin({
+    $: 'jquery',
+    jQuery: 'jquery',
+    'popper.js': ['Popper', 'window.Popper'],
+  }),
+],
 };
