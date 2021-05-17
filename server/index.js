@@ -79,7 +79,7 @@ const registerPlugins = (app) => {
   app.register(fastifyFormbody, { parser: qs.parse });
   app.register(fastifySecureSession, {
     cookieName: 'session',
-    secret: process.env.APPKEY,
+    secret: process.env.SESSION_KEY,
     cookie: {
       path: '/',
     },
