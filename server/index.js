@@ -18,7 +18,7 @@ import Pug from 'pug';
 import Rollbar from 'rollbar';
 import fastifyAuth from 'fastify-auth';
 import createError from 'http-errors';
-import ru from './locales/ru';
+import en from './locales/en.js';
 import addRoutes from './routes';
 import knexConfig from '../knexfile';
 import models from './models';
@@ -34,10 +34,10 @@ const rollbar = new Rollbar({
 
 const setupFrontEnd = (app) => {
   i18next.init({
-    lng: 'ru',
+    lng: 'en',
     debug: mode === 'development',
     resources: {
-      ru,
+      en,
     },
   });
 
