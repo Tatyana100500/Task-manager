@@ -2,7 +2,7 @@ import _ from 'lodash';
 import i18next from 'i18next';
 
 export default (app) => {
-  app.get('/tasks', { name: 'tasks', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.get('/tasks', { name: 'tasks', preHandler: app.authCheck }, async (request, reply) => {
     const query = _.get(request, 'query', null);
     const filter = _.omitBy(query, (e) => e === 'null');
     const tasks = await app.objection.models.task
@@ -25,14 +25,14 @@ export default (app) => {
     });
   });
 
-  app.get('/tasks/new', { name: 'newTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.get('/tasks/new', { name: 'newTask', preHandler: app.authCheck }, async (request, reply) => {
     const users = await app.objection.models.user.query();
     const statuses = await app.objection.models.status.query();
     const labels = await app.objection.models.label.query();
     reply.render('tasks/new', { users, statuses, labels });
   });
 
-  app.get('/tasks/:id', { name: 'viewTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.get('/tasks/:id', { name: 'viewTask', preHandler: app.authCheck }, async (request, reply) => {
     try {
       const task = await app.objection.models.task
         .query()
@@ -45,7 +45,7 @@ export default (app) => {
     }
   });
 
-  app.get('/tasks/:id/edit', { name: 'editTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.get('/tasks/:id/edit', { name: 'editTask', preHandler: app.authCheck }, async (request, reply) => {
     const task = await app.objection.models.task
       .query()
       .findById(request.params.id);
@@ -65,7 +65,7 @@ export default (app) => {
     });
   });
 
-  app.post('/tasks', { name: 'addTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.post('/tasks', { name: 'addTask', preHandler: app.authCheck }, async (request, reply) => {
     const taskBody = request.body.task;
     const labelsId = _.has(taskBody, 'labels') ? [...taskBody.labels] : [];
     const data = {
@@ -107,7 +107,7 @@ export default (app) => {
     return reply;
   });
 
-  app.patch('/tasks/:id', { name: 'updateTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.patch('/tasks/:id', { name: 'updateTask', preHandler: app.authCheck }, async (request, reply) => {
     const taskBody = request.body.task;
     const labelsId = _.has(taskBody, 'labels') ? [...taskBody.labels] : [];
     const data = {
@@ -150,7 +150,7 @@ export default (app) => {
     return reply;
   });
 
-  app.delete('/tasks/:id', { name: 'deleteTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.delete('/tasks/:id', { name: 'deleteTask', preHandler: app.authCheck }, async (request, reply) => {
     const targetTask = await app.objection.models.task.query().findById(request.params.id);
     if (request.currentUser.id !== targetTask.creatorId) {
       request.flash('error', i18next.t('views.pages.tasks.delete.notOwnerError'));
