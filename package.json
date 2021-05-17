@@ -57,6 +57,7 @@
     "objection-unique": "^1.2.1",
     "pino-pretty": "^4.7.1",
     "point-of-view": "^4.14.0",
+    "precss": "^4.0.0",
     "pug": "^3.0.2",
     "qs": "^6.10.1",
     "rollbar": "^2.21.1",
