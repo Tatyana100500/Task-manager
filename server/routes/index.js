@@ -1,6 +1,6 @@
 // @ts-check
 
-import welcome from './welcome.js';
+import welcome from './root.js';
 import users from './users.js';
 import session from './session.js';
 import status from './status';

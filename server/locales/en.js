@@ -5,10 +5,11 @@ export default {
         layouts: {
           main: {
             logOut: 'Logout',
+            logIn: 'Login',
             title: 'Taskmanager',
             header: 'TaskManager',
             footer: {
-              text: 'Dmitriy Dobrenkiy',
+              text: 'Chernishova Tatyana',
               ghLink: 'My Github',
             },
           },
