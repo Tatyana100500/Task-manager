@@ -61,6 +61,12 @@ module.exports = {
       views: {
         layouts: {
           main: {
+            application: {
+              users: 'Пользователи',
+              signIn: 'Вход',
+              signUp: 'Регистрация',
+              signOut: 'Выход',
+            },
             logOut: 'Регистрация',
             signIn: 'Вход',
             // logIn: 'Вход',
