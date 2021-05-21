@@ -55,7 +55,7 @@
 //       },
 //     },
 //   };
-  export default {
+module.exports = {
     translation: {
       appName:'Менеджер задач',
       views: {
