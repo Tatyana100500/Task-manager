@@ -2,6 +2,6 @@
 
 export default (app) => {
   app.get('/', { name: 'root' }, (req, reply) => {
-    reply.render('layouts/main.pug');
+    reply.render('startPage');
   });
 };
