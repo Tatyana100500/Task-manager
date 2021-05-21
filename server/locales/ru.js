@@ -70,8 +70,8 @@ module.exports = {
             logOut: 'Регистрация',
             signIn: 'Вход',
             // logIn: 'Вход',
-            title: 'Менеджер задач',
-            header:'Менеджер задач',
+            title: 'Менеджер задач2',
+            header:'Менеджер задач3',
             footer: {
               text: 'Chernishova Tatyana',
               ghLink: 'My Github',

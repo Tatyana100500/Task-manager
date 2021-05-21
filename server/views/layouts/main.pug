@@ -26,7 +26,7 @@ body(class="bg-dark text-light")
                 +buttonTo(href= urlFor('deleteSession'), 'delete')(class="btn nav-link" value=t('layouts.main.application.signOut'))
             else
               li.nav-item
-                a.nav-link(href=urlFor('newSession'))= t('layouts.main.application.signIn')
+                a.nav-link(href=urlFor('newSession'))= t('views.layouts.main.application.signIn')
               //- li.nav-item
               //-   a.nav-link(href=urlFor('editUser'))= t('layouts.main.application.signUp')
         .collapse.navbar-collapse(id="navbarSupportedContent")
