@@ -16,19 +16,19 @@ body(class="bg-dark text-light")
           h3= t('views.layouts.main.header')
         button(class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse")
           span.navbar-toggler-icon
-        .collapse.navbar-collapse(id="navbarToggleExternalContent")
+        .collapse.navbar-collapse(id="navbarSupportedContent")
           ul.navbar-nav.mr-auto
             li.nav-item
-              a.nav-link(href=route('users'))= t('layouts.main.application.users')
+              a.nav-link(href=urlFor('users'))= t('layouts.main.application.users')
           ul.navbar-nav
-            if isAuthenticated()
+            if reply.request.isSigned
               li.nav-item
-                +buttonTo(route('session'), 'delete')(class="btn nav-link" value=t('layouts.main.application.signOut'))
+                +buttonTo(href= urlFor('deleteSession'), 'delete')(class="btn nav-link" value=t('layouts.main.application.signOut'))
             else
               li.nav-item
-                a.nav-link(href=route('newSession'))= t('layouts.main.application.signIn')
+                a.nav-link(href=urlFor('newSession'))= t('layouts.main.application.signIn')
               li.nav-item
-                a.nav-link(href=route('newUser'))= t('layouts.main.application.signUp')
+                a.nav-link(href=urlFor('editUser'))= t('layouts.main.application.signUp')
         .collapse.navbar-collapse(id="navbarSupportedContent")
           ul.navbar-nav.mr-auto
             block nav-links
