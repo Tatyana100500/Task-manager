@@ -26,4 +26,23 @@ export default (app) => {
         return reply;
       }
     });
+    app.patch('/users/:id', { name: 'updateUser' }, async (request, reply) => {
+      const userId = request.session.get('userId');
+      if (parseInt(request.params.id, 10) !== userId) {
+        request.flash('error', i18next.t('views.pages.users.edit.noAllowed'));
+        reply.redirect(app.reverse('users'));
+      }
+  
+      try {
+        const user = await app.objection.models.user
+          .query()
+          .findById(request.currentUser.id);
+        await user.$query().update(request.body.user);
+        request.flash('success', 'User updated successfuly');
+        reply.redirect(app.reverse('editUser', { id: request.params.id }));
+      } catch (e) {
+        request.flash('error', 'Invalid data');
+        reply.redirect(app.reverse('editUser', { id: request.params.id }));
+      }
+    });
 };
