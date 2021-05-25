@@ -28,14 +28,14 @@ body(class="bg-dark text-light")
             li.nav-item
               a.nav-link(href=urlFor('newSession'))= t('views.layouts.main.application.signIn')
             li.nav-item
-              a.nav-link(href=urlFor('newUser'))= t('views.layouts.main.application.signUp')
+              a.nav-link(href=urlFor('editUser'))= t('views.layouts.main.application.signUp')
         .collapse.navbar-collapse(id="navbarSupportedContent")
           ul.navbar-nav.mr-auto
             block nav-links
           if reply.request.isSigned
             div
               .my-2.my-lg-0
-                a.navbar-brand(href= urlFor('newUser', { id: reply.request.currentUser.id }))= reply.request.currentUser.fullName()
+                a.navbar-brand(href= urlFor('editUser', { id: reply.request.currentUser.id }))= reply.request.currentUser.fullName()
                 a(href= urlFor('deleteSession') data-method='delete' rel="nofollow" class="btn btn-light ml-2")= t('views.layouts.main.logOut')
     - flash = reply.flash() || []
     +alert(flash)
