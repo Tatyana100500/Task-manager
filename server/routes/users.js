@@ -27,6 +27,7 @@ export default (app) => {
       }
     });
     app.patch('/users/:id', { name: 'updateUser' }, async (request, reply) => {
+      console.log(request);
       const userId = request.session.get('userId');
       if (parseInt(request.params.id, 10) !== userId) {
         request.flash('error', i18next.t('views.pages.users.edit.noAllowed'));
