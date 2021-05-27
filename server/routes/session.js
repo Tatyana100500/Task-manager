@@ -1,6 +1,8 @@
 // @ts-check
 
 import encrypt from '../lib/secure';
+import i18next from 'i18next';
+
 
 export default (app) => {
   app.get('/login', { name: 'login' }, async (reuest, reply) => {
@@ -22,7 +24,7 @@ export default (app) => {
       }
       if (password === user.passwordDigest) {
         request.session.set('userId', user.id);
-        request.flash('success','Вы залогинены');
+        request.flash('success', i18next.t('views.pages.login.alert'));
         reply.redirect(app.reverse('root'));
       }
     } catch {
