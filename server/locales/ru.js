@@ -90,8 +90,8 @@ module.exports = {
           },
           login: {
             title: 'Вход',
-            email: 'Email:',
-            password: 'Password:',
+            email: 'Email',
+            password: 'Password',
             notRegistered:'Регистрация',
           },
           signIn: {
