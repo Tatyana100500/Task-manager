@@ -93,13 +93,9 @@ module.exports = {
             email: 'Email',
             password: 'Пароль',
             notRegistered:'Регистрация',
+            alert: 'Вы залогинены',
           },
-          signIn: {
-            title: 'Вход',
-            email: 'Email:',
-            password: 'Password:',
-            notRegistered: 'Регистрация',
-          },
+          
           signup: {
             title: 'Регистрация',
             email: 'Email:',

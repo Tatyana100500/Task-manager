@@ -22,7 +22,7 @@ export default (app) => {
       }
       if (password === user.passwordDigest) {
         request.session.set('userId', user.id);
-        request.flash('success', `Welcome, ${user.firstName}`);
+        request.flash('success','Вы залогинены');
         reply.redirect(app.reverse('root'));
       }
     } catch {
