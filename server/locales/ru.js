@@ -91,7 +91,7 @@ module.exports = {
           login: {
             title: 'Вход',
             email: 'Email',
-            password: 'Password',
+            password: 'Пароль',
             notRegistered:'Регистрация',
           },
           signIn: {
