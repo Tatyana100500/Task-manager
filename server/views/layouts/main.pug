@@ -16,15 +16,15 @@ body(class="bg-dark text-light")
           h3= t('views.layouts.main.header')
         button(class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse")
           span.navbar-toggler-icon
-        .collapse.navbar-collapse(id="navbarSupportedContent")
+        //-.collapse.navbar-collapse(id="navbarSupportedContent")
           ul.navbar-nav.mr-auto
             li.nav-item
               a.nav-link(href=urlFor('users'))= t('views.layouts.main.application.users')
           ul.navbar-nav
-            if reply.request.isSigned
-            li.nav-item
+            //-if reply.request.isSigned
+            //-li.nav-item
               +buttonTo(href= urlFor('deleteSession'), 'delete')(class="btn nav-link" value=t('views.layouts.main.application.signOut'))
-            else
+            //-else
             li.nav-item
               a.nav-link(href=urlFor('newSession'))= t('views.layouts.main.application.signIn')
             li.nav-item
