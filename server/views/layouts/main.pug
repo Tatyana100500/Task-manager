@@ -21,10 +21,10 @@ body(class="bg-dark text-light")
             li.nav-item
               a.nav-link(href=urlFor('users'))= t('views.layouts.main.application.users')
           ul.navbar-nav
-            //- if reply.request.isSigned
-            //-li.nav-item
+            if reply.request.isSigned
+            li.nav-item
               +buttonTo(href= urlFor('deleteSession'), 'delete')(class="btn nav-link" value=t('views.layouts.main.application.signOut'))
-            //- else
+            else
             li.nav-item
               a.nav-link(href=urlFor('newSession'))= t('views.layouts.main.application.signIn')
             li.nav-item
