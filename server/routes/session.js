@@ -10,7 +10,7 @@ export default (app) => {
       const signInForm = {};
       reply.render('session/new', { signInForm });
     })
-    .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
+    .post('/session/new', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
       if (err) {
         return app.httpErrors.internalServerError(err);
       }
@@ -22,6 +22,7 @@ export default (app) => {
         return reply.render('session/new', { signInForm, errors });
       }
       await req.logIn(user);
+      console.log(req);
       req.flash('success', i18next.t('flash.session.create.success'));
       return reply.redirect(app.reverse('welcome/index'));
     }))
