@@ -10,7 +10,7 @@ export default (app) => {
       const signInForm = {};
       reply.render('session/new', { signInForm });
     })
-    .post('/session/new', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
+    .post('/', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
       if (err) {
         return app.httpErrors.internalServerError(err);
       }
