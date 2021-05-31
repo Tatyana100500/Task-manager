@@ -1,5 +1,5 @@
 // @ts-check
-
+import _ from 'lodash';
 import dotenv from 'dotenv';
 import path from 'path';
 import fastify from 'fastify';
@@ -10,7 +10,7 @@ import fastifyFormbody from 'fastify-formbody';
 import fastifySecureSession from 'fastify-secure-session';
 import fastifyPassport from 'fastify-passport';
 import fastifySensible from 'fastify-sensible';
-// import fastifyFlash from 'fastify-flash';
+import fastifyFlash from 'fastify-flash';
 import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
@@ -20,17 +20,23 @@ import i18next from 'i18next';
 import ru from './locales/ru.js';
 // @ts-ignore
 import webpackConfig from '../webpack.config.babel.js';
-
+import Rollbar from 'rollbar';
 import addRoutes from './routes/index.js';
 import getHelpers from './helpers/index.js';
 import knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';
+import createError from 'http-errors';
 
 dotenv.config();
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
 const isDevelopment = mode === 'development';
+const rollbar = new Rollbar({
+  accessToken: process.env.ROLLBAR,
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+});
 
 const setUpViews = (app) => {
   const { devServer } = webpackConfig;
@@ -45,6 +51,11 @@ const setUpViews = (app) => {
     defaultContext: {
       ...helpers,
       assetPath: (filename) => `${domain}/assets/${filename}`,
+      t(key) {
+        return i18next.t(key);
+      },
+      _,
+      currentUser: app.currentUser,
     },
     templates: path.join(__dirname, '..', 'server', 'views'),
   });
@@ -77,25 +88,34 @@ const setupLocalization = () => {
 };
 
 const addHooks = (app) => {
+  app.decorateRequest('currentUser', null);
+  app.decorateRequest('isAuthenticated', false);
+  app.decorateRequest('createError', createError);
   app.addHook('preHandler', async (req, reply) => {
-    reply.locals = {
+    const userId = reply.session.get('userId');
+   
+    if (userId) {
+      reply.locals = {
+      currentUser: await app.objection.models.user.query().findById(userId),
       isAuthenticated: () => req.isAuthenticated(),
-    };
+    } 
+    }
   });
 };
 
 const registerPlugins = (app) => {
   app.register(fastifySensible);
   app.register(fastifyErrorPage);
-  app.register(fastifyReverseRoutes);
+  app.register(fastifyReverseRoutes.plugin);
   app.register(fastifyFormbody, { parser: qs.parse });
   app.register(fastifySecureSession, {
-    secret: process.env.SESSION_KEY,
+    cookieName: 'session',
+    secret: process.env.APPKEY,
     cookie: {
       path: '/',
     },
   });
-
+  app.register(fastifyFlash);
   fastifyPassport.registerUserDeserializer(
     (user) => app.objection.models.user.query().findById(user.id),
   );
