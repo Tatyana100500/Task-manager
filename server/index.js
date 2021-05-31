@@ -1,3 +1,4 @@
+
 // @ts-check
 import _ from 'lodash';
 import dotenv from 'dotenv';
@@ -27,6 +28,8 @@ import knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 import createError from 'http-errors';
+import debug from 'debug';
+const log = debug('??????????????????????????');
 
 dotenv.config();
 const mode = process.env.NODE_ENV || 'development';
@@ -61,6 +64,7 @@ const setUpViews = (app) => {
   });
 
   app.decorateReply('render', function render(viewPath, locals) {
+    log(viewPath);
     this.view(viewPath, { ...locals, reply: this });
   });
 };
