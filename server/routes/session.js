@@ -2,7 +2,8 @@
 
 import encrypt from '../lib/secure';
 import i18next from 'i18next';
-
+import debug from 'debug';
+const log = debug('??????????????????????????');
 
 export default (app) => {
   app
@@ -21,7 +22,8 @@ export default (app) => {
         };
         return reply.render('session/new', { signInForm, errors });
       }
-      await req.logIn(user);
+      const ass = await req.logIn(user);
+      log(ass);
       req.flash('success', 'Вы залогинены');
       return reply.redirect(app.reverse('root'));
     }))
