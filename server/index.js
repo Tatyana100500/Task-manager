@@ -89,7 +89,7 @@ const setupLocalization = () => {
 
 const addHooks = (app) => {
   app.decorateRequest('currentUser', null);
-  app.decorateRequest('isAuthenticated', false);
+  //app.decorateRequest('isAuthenticated', false);
   app.decorateRequest('createError', createError);
   app.addHook('preHandler', async (req, reply) => {
     const userId = reply.session.get('userId');
