@@ -92,14 +92,14 @@ const addHooks = (app) => {
   //app.decorateRequest('isAuthenticated', false);
   app.decorateRequest('createError', createError);
   app.addHook('preHandler', async (req, reply) => {
-    const userId = reply.session.get('userId');
+    //const userId = reply.session.get('userId');
    
-    if (userId) {
+    //if (userId) {
       reply.locals = {
-      currentUser: await app.objection.models.user.query().findById(userId),
+      //currentUser: await app.objection.models.user.query().findById(userId),
       isAuthenticated: () => req.isAuthenticated(),
     } 
-    }
+    //}
   });
 };
 
