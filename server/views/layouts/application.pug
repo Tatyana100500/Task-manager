@@ -26,10 +26,8 @@ html(lang="en")
             li.nav-item
               a.nav-link(href=route('newUser'))= t('layouts.application.signUp')
     .container.wrapper.flex-grow-1
-    - flash = reply.flash() || []
-    +alert(flash)
 
-      //-each messages, type in reply.flash() || []
+      each messages, type in reply.flash() || []
         each message in messages
           div.alert(class=`alert-${getAlertClass(type)}`)= message
 
