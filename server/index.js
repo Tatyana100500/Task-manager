@@ -51,11 +51,11 @@ const setUpViews = (app) => {
     defaultContext: {
       ...helpers,
       assetPath: (filename) => `${domain}/assets/${filename}`,
-      t(key) {
-        return i18next.t(key);
-      },
-      _,
-      currentUser: app.currentUser,
+      //t(key) {
+       // return i18next.t(key);
+      ///},
+      //_,
+      //currentUser: app.currentUser,
     },
     templates: path.join(__dirname, '..', 'server', 'views'),
   });
