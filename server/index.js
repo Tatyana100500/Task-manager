@@ -106,7 +106,7 @@ const addHooks = (app) => {
 const registerPlugins = (app) => {
   app.register(fastifySensible);
   app.register(fastifyErrorPage);
-  app.register(fastifyReverseRoutes.plugin);
+  app.register(fastifyReverseRoutes);
   app.register(fastifyFormbody, { parser: qs.parse });
   app.register(fastifySecureSession, {
     cookieName: 'session',
