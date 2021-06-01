@@ -1,6 +1,6 @@
 
 // @ts-check
-import _ from 'lodash';
+//import _ from 'lodash/fp.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import fastify from 'fastify';
@@ -11,7 +11,7 @@ import fastifyFormbody from 'fastify-formbody';
 import fastifySecureSession from 'fastify-secure-session';
 import fastifyPassport from 'fastify-passport';
 import fastifySensible from 'fastify-sensible';
-import fastifyFlash from 'fastify-flash';
+//import fastifyFlash from 'fastify-flash';
 import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
