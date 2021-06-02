@@ -29,9 +29,9 @@ import models from './models/index.js';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 import createError from 'http-errors';
 import debug from 'debug';
-const log = debug('??????????????????????????');
+const log = debug('my-url');
 
-dotenv.config();
+dotenv.config({ debug: true });
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
 const isDevelopment = mode === 'development';
@@ -64,7 +64,7 @@ const setUpViews = (app) => {
   });
 
   app.decorateReply('render', function render(viewPath, locals) {
-    log('!!!!!!!!!!!!!!!!!!!!!!!!!!', viewPath);
+    log(viewPath);
     this.view(viewPath, { ...locals, reply: this });
   });
 };
