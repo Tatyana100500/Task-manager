@@ -64,7 +64,7 @@ const setUpViews = (app) => {
   });
 
   app.decorateReply('render', function render(viewPath, locals) {
-    log(viewPath);
+    log('!!!!!!!!!!!!!!!!!!!!!!!!!!', viewPath);
     this.view(viewPath, { ...locals, reply: this });
   });
 };
