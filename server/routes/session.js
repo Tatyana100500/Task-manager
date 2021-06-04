@@ -6,12 +6,15 @@ import debug from 'debug';
 const log = debug('??????????????????????????');
 
 export default (app) => {
+  console.log(app);
   app
   .get('/session/new', { name: 'newSession' }, (req, reply) => {
       const signInForm = {};
+      console.log(reply);
       reply.render('session/new', { signInForm });
     })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
+    console.log(req, reply, err, user);
       if (err) {
         return app.httpErrors.internalServerError(err);
       }
