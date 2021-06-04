@@ -23,7 +23,7 @@ export default (app) => {
         return reply.render('session/new', { signInForm, errors });
       }
       const ass = await req.logIn(user);
-      log(ass);
+      console.log(ass);
       req.flash('success', 'Вы залогинены');
       return reply.redirect(app.reverse('root'));
     }))
