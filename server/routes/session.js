@@ -20,7 +20,7 @@ export default (app) => {
           email: req.body.email,
         });
       const password = encrypt(req.body.password);
-      if (!user1 || password !== user.passwordDigest) {
+      if (!user) {
         const signInForm = req.body.data;
         console.log("user end data", signInForm, user)
         const errors = {
