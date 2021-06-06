@@ -35,7 +35,7 @@ export default (app) => {
         const ass = await req.logIn(user);
       console.log(ass);
       req.flash('success', 'Вы залогинены');
-      return reply.redirect(app.reverse('root'));
+      return reply.redirect(app.reverse('/'));
         //req.session.set('userId', user.id);
         //req.flash('success', `Welcome, ${user.firstName}`);
         //reply.redirect(app.reverse('root'));
@@ -43,7 +43,7 @@ export default (app) => {
     } catch (err) {
       console.log(app.reverse, app.httpErrors.internalServerError(err));
       req.flash(i18next.t('flash.session.create.error'));
-      return reply.redirect(app.reverse('root'));
+      return reply.redirect(app.reverse('/protected'));
       //return app.httpErrors.internalServerError(err);
       //return reply.render('session/new', { signInForm, err });
       //reply.redirect(app.reverse('login'));
