@@ -41,7 +41,7 @@ export default (app) => {
         //reply.redirect(app.reverse('root'));
       }
     } catch (err) {
-      console.log(app.httpErrors);
+      console.log(app.reverse, app.httpErrors.internalServerError(err));
       req.flash(i18next.t('flash.session.create.error'));
       return reply.redirect(app.reverse('root'));
       //return app.httpErrors.internalServerError(err);
