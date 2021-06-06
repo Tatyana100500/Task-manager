@@ -29,14 +29,14 @@ export default (app) => {
           email: [{ message: i18next.t('flash.session.create.error') }],
         };
         console.log("user end data");
-        return reply.render('/session', { signInForm, errors });
+        return reply.render('/session/new', { signInForm, errors });
         //req.flash('error', 'Bad username or password');
         //reply.redirect(app.reverse('/session/new'));
       }
       if (password === user.passwordDigest) {
         const ass = await req.logIn(user);
       console.log(ass);
-      req.flash('success', 'Вы залогинены');
+      req.flash.now('success', 'Вы залогинены');
       return reply.redirect(app.reverse('root'));
         //req.session.set('userId', user.id);
         //req.flash('success', `Welcome, ${user.firstName}`);
