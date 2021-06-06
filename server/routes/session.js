@@ -27,7 +27,7 @@ export default (app) => {
           email: [{ message: i18next.t('flash.session.create.error') }],
         };
         console.log("user end data", reply);
-        return reply.render('session/new', { signInForm, errors });
+        return reply.render('/session', { signInForm, errors });
         //req.flash('error', 'Bad username or password');
         //reply.redirect(app.reverse('/session/new'));
       }
@@ -41,8 +41,10 @@ export default (app) => {
         //reply.redirect(app.reverse('root'));
       }
     } catch (err) {
-      console.log(app);
-      return app.httpErrors.internalServerError(err);
+      console.log(app.httpErrors);
+      req.flash(i18next.t('flash.session.create.error'));
+      return reply.redirect(app.reverse('root'));
+      //return app.httpErrors.internalServerError(err);
       //return reply.render('session/new', { signInForm, err });
       //reply.redirect(app.reverse('login'));
     }
