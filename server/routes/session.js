@@ -22,10 +22,11 @@ export default (app) => {
       const password = encrypt(req.body.password);
       if (!user) {
         const signInForm = req.body.data;
-        console.log("user end data", signInForm, user)
+       
         const errors = {
           email: [{ message: i18next.t('flash.session.create.error') }],
         };
+        console.log("user end data", reply);
         return reply.render('session/new', { signInForm, errors });
         //req.flash('error', 'Bad username or password');
         //reply.redirect(app.reverse('/session/new'));
@@ -40,7 +41,7 @@ export default (app) => {
         //reply.redirect(app.reverse('root'));
       }
     } catch (err) {
-      console.log(err, app.httpErrors.internalServerError(err));
+      console.log(app);
       return app.httpErrors.internalServerError(err);
       //return reply.render('session/new', { signInForm, err });
       //reply.redirect(app.reverse('login'));
