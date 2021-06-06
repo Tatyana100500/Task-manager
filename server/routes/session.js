@@ -13,7 +13,7 @@ export default (app) => {
     })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
     console.log(user, err, req.body);
-    try {
+    /*try {
       const [user1] = await app.objection.models.user
         .query()
         .select()
@@ -49,22 +49,23 @@ export default (app) => {
       //return app.httpErrors.internalServerError(err);
       //return reply.render('session/new', { signInForm, err });
       //reply.redirect(app.reverse('login'));
-    }
-      //if (err) {
-       // return app.httpErrors.internalServerError(err);
-      //}
-     // if (!user) {
-       // const signInForm = req.body.data;
-       // console.log("user end data", signInForm, user)
-       // const errors = {
-        //  email: [{ message: i18next.t('flash.session.create.error') }],
-       // };
-       // return reply.render('session/new', { signInForm, errors });
-      //}
-     // const ass = await req.logIn(user);
-      //console.log(ass);
-      //req.flash('success', 'Вы залогинены');
-      //return reply.redirect(app.reverse('root'));
+    }*/
+      if (err) {
+        console.log("http error", app.reverse('root'), app.reverse('session'));
+        return app.httpErrors.internalServerError(err);
+      }
+      if (!user) {
+        const signInForm = req.body.data;
+        console.log("user false", signInForm, user)
+        const errors = {
+          email: [{ message: i18next.t('flash.session.create.error') }],
+        };
+        return reply.render('session/new', { signInForm, errors });
+      }
+      const ass = await req.logIn(user);
+      console.log('success', ass);
+      req.flash.now('success', 'Вы залогинены');
+      return reply.redirect(app.reverse('root'));
     }))
   .delete('/session', (req, reply) => {
       req.logOut();
