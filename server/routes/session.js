@@ -12,7 +12,7 @@ export default (app) => {
       reply.render('session/new', { signInForm });
     })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
-    console.log(user, err);
+    console.log(user, err, req.body);
     try {
       const [user1] = await app.objection.models.user
         .query()
@@ -33,7 +33,7 @@ export default (app) => {
         //req.flash('error', 'Bad username or password');
         //reply.redirect(app.reverse('/session/new'));
       }
-      if (password === user.password) {
+      if (password === user.passwordDigest) {
         const ass = await req.logIn(user);
       console.log(ass);
       req.flash('success', 'Вы залогинены');
@@ -43,9 +43,9 @@ export default (app) => {
         //reply.redirect(app.reverse('root'));
       }
     } catch (err) {
-      console.log(app.root);
-      req.flash(i18next.t('flash.session.create.error'));
-      return reply.redirect(app.reverse('newSession'));
+      console.log(app.reverse('root'), app.reverse('session'));
+      req.flash('error', i18next.t('flash.session.create.error'));
+      reply.redirect(app.reverse('session'));
       //return app.httpErrors.internalServerError(err);
       //return reply.render('session/new', { signInForm, err });
       //reply.redirect(app.reverse('login'));
