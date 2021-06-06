@@ -45,7 +45,7 @@ export default (app) => {
     } catch (err) {
       console.log(app.reverse('root'), app.reverse('session'));
       req.flash('error', i18next.t('flash.session.create.error'));
-      reply.redirect(app.reverse('session'));
+      reply.redirect(app.reverse('root'));
       //return app.httpErrors.internalServerError(err);
       //return reply.render('session/new', { signInForm, err });
       //reply.redirect(app.reverse('login'));
