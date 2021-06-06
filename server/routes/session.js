@@ -12,7 +12,7 @@ export default (app) => {
       reply.render('session/new', { signInForm });
     })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
-    console.log(user);
+    console.log(user, err);
     try {
       const [user1] = await app.objection.models.user
         .query()
@@ -43,7 +43,7 @@ export default (app) => {
         //reply.redirect(app.reverse('root'));
       }
     } catch (err) {
-      console.log(app.reverse, app.httpErrors.internalServerError(err));
+      console.log(app.root);
       req.flash(i18next.t('flash.session.create.error'));
       return reply.redirect(app.reverse('newSession'));
       //return app.httpErrors.internalServerError(err);
