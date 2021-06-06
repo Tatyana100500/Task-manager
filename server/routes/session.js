@@ -40,6 +40,7 @@ export default (app) => {
         //reply.redirect(app.reverse('root'));
       }
     } catch (err) {
+      console.log(err, app.httpErrors.internalServerError(err));
       return app.httpErrors.internalServerError(err);
       //return reply.render('session/new', { signInForm, err });
       //reply.redirect(app.reverse('login'));
