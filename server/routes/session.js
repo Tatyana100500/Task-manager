@@ -12,6 +12,7 @@ export default (app) => {
       reply.render('session/new', { signInForm });
     })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
+    console.log(user);
     try {
       const [user1] = await app.objection.models.user
         .query()
@@ -20,22 +21,23 @@ export default (app) => {
           email: req.body.email,
         });
       const password = encrypt(req.body.password);
+      console.log(req.body);
       if (!user) {
         const signInForm = req.body.data;
        
         const errors = {
           email: [{ message: i18next.t('flash.session.create.error') }],
         };
-        console.log("user end data", reply);
+        console.log("user end data");
         return reply.render('/session', { signInForm, errors });
         //req.flash('error', 'Bad username or password');
         //reply.redirect(app.reverse('/session/new'));
       }
-      if (password === user.passwordDigest) {
+      if (password === user.password) {
         const ass = await req.logIn(user);
       console.log(ass);
       req.flash('success', 'Вы залогинены');
-      return reply.redirect(app.reverse('/'));
+      return reply.redirect(app.reverse('root'));
         //req.session.set('userId', user.id);
         //req.flash('success', `Welcome, ${user.firstName}`);
         //reply.redirect(app.reverse('root'));
@@ -43,7 +45,7 @@ export default (app) => {
     } catch (err) {
       console.log(app.reverse, app.httpErrors.internalServerError(err));
       req.flash(i18next.t('flash.session.create.error'));
-      return reply.redirect(app.reverse('/protected'));
+      return reply.redirect(app.reverse('newSession'));
       //return app.httpErrors.internalServerError(err);
       //return reply.render('session/new', { signInForm, err });
       //reply.redirect(app.reverse('login'));
