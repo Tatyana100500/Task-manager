@@ -162,6 +162,11 @@ export default () => {
   setUpStaticAssets(app);
   addRoutes(app);
   addHooks(app);
-
+  if (mode === 'production') {
+    app.setErrorHandler((error, req, reply) => {
+      rollbar.error(error);
+      reply.send(error);
+    });
+  }
   return app;
 };
