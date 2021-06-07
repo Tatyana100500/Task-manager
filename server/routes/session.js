@@ -32,7 +32,6 @@ export default (app) => {
       return reply.redirect(app.reverse('root'));
     }))*/
     .post('/session', { name: 'session' }, async (request, reply) => {
-      try {
         const password = encrypt(request.body.password);
         const email = encrypt(request.body.email);
         console.log(email, password);
@@ -53,11 +52,8 @@ export default (app) => {
           request.flash('success', 'Вы залогинены');
           reply.redirect(app.reverse('root'));
         }
-      } catch (e) {
-        console.log('error !!!', e)
         request.flash('error', 'Login error!');
         reply.redirect(app.reverse('session'));
-      }
     })
   .delete('/session', (req, reply) => {
       req.logOut();
