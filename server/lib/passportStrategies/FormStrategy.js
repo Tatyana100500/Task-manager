@@ -10,7 +10,7 @@ export default class FormStrategy extends Strategy {
   }
 
   async authenticate(request) {
-    console.log(request.isAuthenticated);
+    console.log(request.isAuthenticated());
     if (request.isAuthenticated()) {
       return this.pass();
     }
