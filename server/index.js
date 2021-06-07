@@ -64,7 +64,7 @@ const setUpViews = (app) => {
   });
 
   app.decorateReply('render', function render(viewPath, locals) {
-    console.log(viewPath, locals.errors);
+    console.log(viewPath, locals);
     this.view(viewPath, { ...locals, reply: this });
   });
 };
@@ -142,7 +142,7 @@ const registerPlugins = (app) => {
     knexConfig: knexConfig[mode],
     models,
   });
-  if (process.env.NODE_ENV !== 'production') app.register(fastifyErrorPage);
+  //if (process.env.NODE_ENV !== 'production') app.register(fastifyErrorPage);
 };
 
 export default () => {
