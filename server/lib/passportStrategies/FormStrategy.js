@@ -20,7 +20,7 @@ export default class FormStrategy extends Strategy {
     console.log(email, password);
     const { models } = this.app.objection;
     const user = await models.user.query().findOne({ email });
-    console.log(user, user.verifyPassword(password));
+    console.log(user);
     if (user && user.verifyPassword(password)) {
       return this.success(user);
     }
