@@ -11,7 +11,6 @@ export default (app) => {
       const signInForm = {};
       reply.render('session/new', { signInForm });
     })
-/*
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
     console.log(user, err, req.body);
       if (err) {
@@ -30,31 +29,7 @@ export default (app) => {
       console.log('success', ass);
       req.flash('success', 'Вы залогинены');
       return reply.redirect(app.reverse('root'));
-    }))*/
-    .post('/session', { name: 'session' }, async (request, reply) => {
-        const password = encrypt(request.body.password);
-        const email = encrypt(request.body.email);
-        console.log(email, password);
-        const [user] = await app.objection.models.user
-          .query()
-          .select()
-          .findOne({ email })
-          //.where({
-          //  email: request.body.email,
-          //});
-        
-        if (!user || password !== user.passwordDigest) {
-          request.flash('error', 'Bad username or password');
-          reply.redirect(app.reverse('session'));
-        }
-        if (password === user.passwordDigest) {
-          request.session.set('userId', user.id);
-          request.flash('success', 'Вы залогинены');
-          reply.redirect(app.reverse('root'));
-        }
-        request.flash('error', 'Login error!');
-        reply.redirect(app.reverse('session'));
-    })
+    }))
   .delete('/session', (req, reply) => {
       req.logOut();
       req.flash('info', i18next.t('flash.session.delete.success'));
