@@ -145,6 +145,7 @@ const registerPlugins = (app) => {
     knexConfig: knexConfig[mode],
     models,
   });
+  if (process.env.NODE_ENV !== 'production') app.register(fastifyErrorPage);
 };
 
 export default () => {
