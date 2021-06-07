@@ -10,7 +10,7 @@ export default class FormStrategy extends Strategy {
   }
 
   async authenticate(request) {
-    console.log(request.isAuthenticated());
+    console.log(request.isAuthenticated);
     if (request.isAuthenticated()) {
       return this.pass();
     }
@@ -20,7 +20,7 @@ export default class FormStrategy extends Strategy {
     console.log(email, password);
     const { models } = this.app.objection;
     const user = await models.user.query().findOne({ email });
-    console.log(models.user.query(), user.verifyPassword(password) );
+    console.log(user);
     if (user && user.verifyPassword(password)) {
       return this.success(user);
     }
