@@ -36,9 +36,9 @@ export default (app) => {
         const [user] = await app.objection.models.user
           .query()
           .select()
-          .where({
-            email: request.body.email,
-          });
+          //.where({
+          //  email: request.body.email,
+          //});
         const password = encrypt(request.body.password);
         console.log(user, password);
         if (!user || password !== user.passwordDigest) {
