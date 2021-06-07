@@ -19,7 +19,6 @@ export default (app) => {
       }
       if (!user) {
         const signInForm = req.body.data;
-        console.log("user false", encrypt(req.body.data.password), user.passwordDigest)
         const errors = {
           email: [{ message: i18next.t('flash.session.create.error') }],
         };
