@@ -128,8 +128,7 @@ const registerPlugins = (app) => {
   app.register(fastifyPassport.initialize());
   app.register(fastifyPassport.secureSession());
   app.decorate('fp', fastifyPassport);
-  app.decorate('authenticate', (...args) =>
-    fastifyPassport.authenticate(
+  app.decorate('authenticate', (...args) => fastifyPassport.authenticate(
     'form',
     {
       failureRedirect: app.reverse('root'),
