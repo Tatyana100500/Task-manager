@@ -50,8 +50,8 @@ export default (app) => {
           request.flash('success', 'Вы залогинены');
           reply.redirect(app.reverse('root'));
         }
-      } catch {
-        console.log('error !!!')
+      } catch (e) {
+        console.log('error !!!', e)
         request.flash('error', 'Login error!');
         reply.redirect(app.reverse('session'));
       }
