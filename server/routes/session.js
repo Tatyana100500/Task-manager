@@ -33,14 +33,17 @@ export default (app) => {
     }))*/
     .post('/session', { name: 'session' }, async (request, reply) => {
       try {
+        const password = encrypt(request.body.password);
+        const email = encrypt(request.body.email);
+        console.log(email, password);
         const [user] = await app.objection.models.user
           .query()
           .select()
+          .findOne({ email })
           //.where({
           //  email: request.body.email,
           //});
-        const password = encrypt(request.body.password);
-        console.log(user, password);
+        
         if (!user || password !== user.passwordDigest) {
           request.flash('error', 'Bad username or password');
           reply.redirect(app.reverse('session'));
