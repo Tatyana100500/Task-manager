@@ -64,7 +64,7 @@ const setUpViews = (app) => {
   });
 
   app.decorateReply('render', function render(viewPath, locals) {
-    console.log(viewPath, locals);
+    console.log(viewPath, locals.errors);
     this.view(viewPath, { ...locals, reply: this });
   });
 };
@@ -128,8 +128,7 @@ const registerPlugins = (app) => {
   app.register(fastifyPassport.initialize());
   app.register(fastifyPassport.secureSession());
   app.decorate('fp', fastifyPassport);
-  app.decorate('authenticate', (...args) => { 
-    console.log(args);
+  app.decorate('authenticate', (...args) =>
     fastifyPassport.authenticate(
     'form',
     {
@@ -137,8 +136,7 @@ const registerPlugins = (app) => {
       failureFlash: i18next.t('flash.authError'),
     },
   // @ts-ignore
-  )(...args)
-});
+  )(...args));
 
   app.register(fastifyMethodOverride);
   app.register(fastifyObjectionjs, {
