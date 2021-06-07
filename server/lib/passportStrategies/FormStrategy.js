@@ -10,13 +10,13 @@ export default class FormStrategy extends Strategy {
   }
 
   async authenticate(request) {
-    console.log(request.isAuthenticated);
+    console.log(request.isAuthenticated());
     if (request.isAuthenticated()) {
       return this.pass();
     }
 
-    const email = _.get(request, 'body.data.email', null);
-    const password = _.get(request, 'body.data.password', null);
+    const email = _.get(request, 'body.data.Email', null);
+    const password = _.get(request, 'body.data.Пароль', null);
     console.log(email, password);
     const { models } = this.app.objection;
     const user = await models.user.query().findOne({ email });
