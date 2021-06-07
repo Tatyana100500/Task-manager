@@ -12,9 +12,7 @@ export default (app) => {
       reply.render('session/new', { signInForm });
     })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
-    console.log(user, err, req.body);
       if (err) {
-        console.log("http error", app.reverse('root'), app.reverse('session'));
         return app.httpErrors.internalServerError(err);
       }
       if (!user) {
@@ -24,8 +22,7 @@ export default (app) => {
         };
         return reply.render('session/new', { signInForm, errors });
       }
-      const ass = await req.logIn(user);
-      console.log('success', ass);
+      await req.logIn(user);
       req.flash('success', 'Вы залогинены');
       return reply.redirect(app.reverse('root'));
     }))

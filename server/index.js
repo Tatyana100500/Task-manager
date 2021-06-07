@@ -128,14 +128,17 @@ const registerPlugins = (app) => {
   app.register(fastifyPassport.initialize());
   app.register(fastifyPassport.secureSession());
   app.decorate('fp', fastifyPassport);
-  app.decorate('authenticate', (...args) => fastifyPassport.authenticate(
+  app.decorate('authenticate', (...args) => { 
+    console.log(args);
+    fastifyPassport.authenticate(
     'form',
     {
       failureRedirect: app.reverse('root'),
       failureFlash: i18next.t('flash.authError'),
     },
   // @ts-ignore
-  )(...args));
+  )(...args)
+});
 
   app.register(fastifyMethodOverride);
   app.register(fastifyObjectionjs, {
