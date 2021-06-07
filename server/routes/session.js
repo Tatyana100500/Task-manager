@@ -56,15 +56,15 @@ export default (app) => {
       }
       if (!user) {
         const signInForm = req.body.data;
-        console.log("user false", signInForm, user)
+        console.log("user false", encrypt(req.body.data.password), user.passwordDigest)
         const errors = {
           email: [{ message: i18next.t('flash.session.create.error') }],
         };
-        return reply.redirect(app.reverse('root', { signInForm, errors }));
+        return reply.redirect(app.reverse('root', errors ));
       }
       const ass = await req.logIn(user);
       console.log('success', ass);
-      req.flash.now('success', 'Вы залогинены');
+      req.flash('success', 'Вы залогинены');
       return reply.redirect(app.reverse('root'));
     }))
   .delete('/session', (req, reply) => {
