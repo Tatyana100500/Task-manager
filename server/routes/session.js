@@ -2,6 +2,8 @@
 
 import encrypt from '../lib/secure';
 import i18next from 'i18next';
+// @ts-ignore
+import buildFromObj from '../lib/formObjectBuilder';
 import debug from 'debug';
 const log = debug('??????????????????????????');
 
@@ -21,7 +23,7 @@ export default (app) => {
         const errors = {
           email: [{ message: i18next.t('flash.session.create.error') }],
         };
-        return reply.render('session', { signInForm, errors });
+        return reply.render('session', buildFromObj(signInForm, errors) );
       }
       await req.logIn(user);
       req.flash('success', 'Вы залогинены');
