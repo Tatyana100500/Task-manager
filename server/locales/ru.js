@@ -25,6 +25,7 @@ module.exports = {
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
+        updateUser: 'Изменить',
       },
     },
     views: {
