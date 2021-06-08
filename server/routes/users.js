@@ -28,7 +28,7 @@ export default (app) => {
         return reply;
       }
     });
-    app.delete('/users/:id', { name: 'deleteUser', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+    app.delete('/users/:id', { name: 'deleteUser', preHandler: app.authCheck }, async (request, reply) => {
       const userId = request.session.get('userId');
       if (parseInt(request.params.id, 10) !== userId) {
         request.flash('error', i18next.t('views.pages.users.delete.error.notAllowed'));
@@ -51,7 +51,7 @@ export default (app) => {
       reply.redirect(app.reverse('users'));
     });
   
-    app.patch('/users/:id', { name: 'updateUser', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+    app.patch('/users/:id', { name: 'updateUser', preHandler: app.authCheck }, async (request, reply) => {
       const userId = request.session.get('userId');
       if (parseInt(request.params.id, 10) !== userId) {
         request.flash('error', i18next.t('views.pages.users.edit.noAllowed'));
