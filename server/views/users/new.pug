@@ -7,6 +7,6 @@ block content
   +formFor()(action=route('users') method='post')
     +input(user, 'Имя', errors)(type="text")
     +input(user, 'Фамилия', errors)(type="text")
-    +input(user, 'email', errors)(type="text")
-    +input(user, 'password', errors)(type="password")
+    +input(user, 'Email', errors)(type="text")
+    +input(user, 'Пароль', errors)(type="password")
     +submit(user)(value=t('views.users.new.submit'))
