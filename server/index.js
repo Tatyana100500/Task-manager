@@ -142,7 +142,6 @@ const registerPlugins = (app) => {
     knexConfig: knexConfig[mode],
     models,
   });
-  //if (process.env.NODE_ENV !== 'production') app.register(fastifyErrorPage);
 };
 
 export default () => {
@@ -161,6 +160,7 @@ export default () => {
   addHooks(app);
   if (mode === 'production') {
     app.setErrorHandler((error, req, reply) => {
+      console.log('!!!!!!!!!!!!', error)
       rollbar.error(error);
       reply.send(error);
     });
