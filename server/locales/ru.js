@@ -36,6 +36,8 @@ module.exports = {
       },
       users: {
         id: 'ID',
+        firstName: 'Имя',
+        lastName: 'Фамилия',
         email: 'Email',
         createdAt: 'Дата создания',
         new: {
