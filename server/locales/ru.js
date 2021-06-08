@@ -25,7 +25,6 @@ module.exports = {
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
-        updateUser: 'Изменить',
       },
     },
     views: {
@@ -41,6 +40,8 @@ module.exports = {
         lastName: 'Фамилия',
         email: 'Email',
         createdAt: 'Дата создания',
+        updateUser: 'Изменить',
+        delete: 'Удалить',
         new: {
           submit: 'Сохранить',
           signUp: 'Регистрация',
