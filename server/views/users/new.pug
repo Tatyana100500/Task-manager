@@ -4,7 +4,17 @@ block header
   = t('views.users.new.signUp')
 
 block content
-  +formFor()(action=route('users') method='post')
-    +input(user, 'email', errors)(type="text")
-    +input(user, 'password', errors)(type="password")
-    +submit(user)(value=t('views.users.new.submit'))
+form(action= urlFor('users') method="POST")
+.form-group
+        label(for="firstName")= t('views.users.firstName')
+        input(type="text" class="form-control" name="user[firstName]" id="firstName" placeholder="Enter your first name")
+      .form-group
+        label(for="lastName")= t('views.users.lastName')
+        input(type="text" class="form-control" name="user[lastName]" id="lastName" placeholder="Enter your last name")
+      .form-group
+        label(for="email")= t('views.users.email')
+        input(type="email" class="form-control" name="user[email]" id="email" aria-describedby="emailHelp" placeholder="Enter email")
+      .form-group
+        label(for="password")= t('views.users.password')
+        input(type="password" class="form-control" name="user[password]" id="password" placeholder="Enter password")
+      input(type="submit" class="btn btn-light" value=t('views.users.new.submit'))

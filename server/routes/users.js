@@ -6,6 +6,7 @@ export default (app) => {
   app
     .get('/users', { name: 'users' }, async (req, reply) => {
       const users = await app.objection.models.user.query();
+      console.log(users);
       reply.render('users/index', { users });
       return reply;
     })
