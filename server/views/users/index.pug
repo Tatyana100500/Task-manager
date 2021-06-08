@@ -8,7 +8,7 @@ block content
         th= t('Полное имя')
         th= t('views.users.email')
         th= t('views.users.createdAt')
-        th= t(' ')
+        th(scope="col-1")= t(' ')
     tbody
       each user in users
         tr
@@ -16,6 +16,6 @@ block content
           td= user.fullName()
           td= user.email
           td= formatDate(user.createdAt)
-          td= 
+          td.col-1
             a.nav-link(href=route('updateUser', { id: user.id }))= t('views.users.updateUser')
             a.nav-link(href=route('deleteUser', { id: user.id }))= t('views.users.delete')
