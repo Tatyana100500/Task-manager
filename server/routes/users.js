@@ -28,6 +28,20 @@ export default (app) => {
         return reply;
       }
     });
+    app.get('/users/:id/edit', { name: 'showUser', preHandler: app.authCheck }, async (request, reply) => {
+      const userId = request.session.get('userId');
+      if (parseInt(request.params.id, 10) !== userId) {
+        request.flash('error', i18next.t('views.pages.users.edit.notAllowed'));
+        reply.redirect(app.reverse('users'));
+      }
+      try {
+        const user = await app.objection.models.user.query().findById(request.params.id);
+        reply.render('users/edit', { user });
+      } catch {
+        request.flash('error', i18next.t('views.pages.users.edit.error'));
+        reply.redirect(app.reverse('users'));
+      }
+    });
     app.delete('/users/:id', { name: 'deleteUser', preHandler: app.authCheck }, async (request, reply) => {
       const userId = request.session.get('userId');
       if (parseInt(request.params.id, 10) !== userId) {
