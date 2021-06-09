@@ -28,7 +28,7 @@ export default (app) => {
         return reply;
       }
     });
-    app.get('/users/:id/edit', { name: 'showUser', preHandler: app.authCheck }, async (request, reply) => {
+    app.get('/users/:id/edit', { name: 'showUser' }, async (request, reply) => {
       const userId = request.session.get('userId');
       if (parseInt(request.params.id, 10) !== userId) {
         request.flash('error', i18next.t('views.pages.users.edit.notAllowed'));
@@ -42,7 +42,7 @@ export default (app) => {
         reply.redirect(app.reverse('users'));
       }
     });
-    app.delete('/users/:id', { name: 'deleteUser', preHandler: app.authCheck }, async (request, reply) => {
+    app.delete('/users/:id', { name: 'deleteUser' }, async (request, reply) => {
       const userId = request.session.get('userId');
       if (parseInt(request.params.id, 10) !== userId) {
         request.flash('error', i18next.t('views.pages.users.delete.error.notAllowed'));
@@ -65,7 +65,7 @@ export default (app) => {
       reply.redirect(app.reverse('users'));
     });
   
-    app.patch('/users/:id', { name: 'updateUser', preHandler: app.authCheck }, async (request, reply) => {
+    app.patch('/users/:id', { name: 'updateUser' }, async (request, reply) => {
       const userId = request.session.get('userId');
       if (parseInt(request.params.id, 10) !== userId) {
         request.flash('error', i18next.t('views.pages.users.edit.noAllowed'));
