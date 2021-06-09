@@ -11,8 +11,8 @@ block content
         th(scope="col-1")= t(' ')
     tbody
       each user in users
-      - var i = t(`${user.id}`)
         tr
+        - var i = t(`${user.id}`)
           td= i
           td= user.fullName
           td= user.email
