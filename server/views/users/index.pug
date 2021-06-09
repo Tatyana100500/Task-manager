@@ -14,7 +14,7 @@ block content
         tr
           td= user.id
           td
-            a(href=route('updateUser'))= user.fullName()
+            a(href=route('updateUser', { id: user.id }))= user.fullName
           td= user.email
           td= formatDate(user.createdAt)
           //-td.col-1
