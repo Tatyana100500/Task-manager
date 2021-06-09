@@ -13,8 +13,7 @@ block content
       each user in users
         tr
           td= user.id
-          td
-            a(href=route('updateUser', `/users/:${user.id}/edit`))= user.fullName
+          tda(href=route('updateUser'))= user.fullName
           td= user.email
           td= formatDate(user.createdAt)
           //-td.col-1
