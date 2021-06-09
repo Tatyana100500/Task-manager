@@ -12,11 +12,10 @@ block content
     tbody
       each user in users
         tr
-        - var i = t(`${user.id}`)
-          td= i
+          td= user.id
           td= user.fullName()
           td= user.email
           td= formatDate(user.createdAt)
           td.col-1
-            a(href=route('updateUser', { id: i }))= t('views.users.updateUser')
-            a(href=route('deleteUser', { id: i }))= t('views.users.delete')
+            a(href=route('updateUser', { id: user.id.toString() }))= t('views.users.updateUser')
+            a(href=route('deleteUser', { id: user.id.toString() }))= t('views.users.delete')
