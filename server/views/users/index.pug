@@ -14,9 +14,9 @@ block content
         tr
         - var i = t(`${user.id}`)
           td= i
-          td= user.fullName
+          td= user.fullName()
           td= user.email
           td= formatDate(user.createdAt)
-          //-td.col-1
-            a(href=route('updateUser', { id: user.id }))= t('views.users.updateUser')
-            a(href=route('deleteUser', { id: user.id }))= t('views.users.delete')
+          td.col-1
+            a(href=route('updateUser', { id: i }))= t('views.users.updateUser')
+            a(href=route('deleteUser', { id: i }))= t('views.users.delete')
