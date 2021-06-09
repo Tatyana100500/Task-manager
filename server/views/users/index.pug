@@ -17,5 +17,5 @@ block content
           td= user.email
           td= formatDate(user.createdAt)
           td.col-1
-            a(href=route('updateUser', { id: user.id.toString() }))= t('views.users.updateUser')
-            a(href=route('deleteUser', { id: user.id.toString() }))= t('views.users.delete')
+            a(href=route('updateUser', { 'id': user.id.toString() }))= t('views.users.updateUser')
+            a(href=route('deleteUser', { 'id': user.id.toString() }))= t('views.users.delete')
