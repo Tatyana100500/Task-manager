@@ -12,8 +12,9 @@ block content
     tbody
       each user in users
         tr
-          td= user.iß
-          tda(href=route('updateUser', { id: `'${user.id}'` }))= user.fullName
+          td= user.id
+          - var i = { id: `${user.id}` }
+          tda(href=route('updateUser', i))= user.fullName
           td= user.email
           td= formatDate(user.createdAt)
           //-td.col-1
