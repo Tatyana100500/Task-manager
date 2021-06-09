@@ -11,10 +11,10 @@ block content
         th(scope="col-1")= t(' ')
     tbody
       each user in users
+      - var i = t(`${user.id}`)
         tr
-          td= user.id
-          - var i = t(`${user.id}`)
-          tda(href=route('updateUser', { id: i }))= user.fullName
+          td= i
+          td= user.fullName
           td= user.email
           td= formatDate(user.createdAt)
           //-td.col-1
