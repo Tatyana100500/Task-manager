@@ -25,7 +25,7 @@ export default (app) => {
         };
 
         app.log.info(errors);
-        return reply.render('/session', { signInForm, errors } );
+        reply.render('/session', { signInForm, errors } );
       }
       await req.logIn(user);
       req.flash('success', 'Вы залогинены');
