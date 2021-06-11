@@ -11,7 +11,7 @@ export default (app) => {
   app
   .get('/session/new', { name: 'newSession' }, (req, reply) => {
       const signInForm = {};
-      reply.render('session/new', {f: buildFromObj(signInForm) } );
+      reply.render('session/new', buildFromObj(signInForm) );
     })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
     //console.log(reply.request, err, user);
