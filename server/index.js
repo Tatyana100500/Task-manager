@@ -158,12 +158,12 @@ export default () => {
   setUpStaticAssets(app);
   addRoutes(app);
   addHooks(app);
-  if (mode === 'production') {
+  //if (mode === 'production') {
     app.setErrorHandler((error, req, reply) => {
       console.log('!!!!!!!!!!!!', error)
       rollbar.error(error);
       reply.send(error);
     });
-  }
+  //}
   return app;
 };
