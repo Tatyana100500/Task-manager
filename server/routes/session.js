@@ -19,14 +19,14 @@ export default (app) => {
         return app.httpErrors.internalServerError(err);
       }
       if (!user) {
-        console.log(app);
+        
         const signInForm = req.body.data;
         const errors = {
           email: [{ message: i18next.t('flash.session.create.error') }],
         };
-
+        console.log(buildFromObj({ signInForm, errors }));
         app.log.info(errors);
-        return reply.render('/session', { f: buildFromObj({ signInForm, errors })});
+        return reply.render('/session', { signInForm, errors });
       }
       await req.logIn(user);
       req.flash('success', 'Вы залогинены');
