@@ -24,9 +24,9 @@ export default (app) => {
         const errors = {
           email: [{ message: i18next.t('flash.session.create.error') }],
         };
-        console.log(buildFromObj(signInForm, errors));
-        app.log.info(errors);
-        return reply.render('/session', { signInForm, errors });
+        //console.log(buildFromObj(signInForm, errors));
+        //app.log.info(errors);
+        return reply.render('/session', {f: buildFromObj(signInForm, errors) });
       }
       await req.logIn(user);
       req.flash('success', 'Вы залогинены');
