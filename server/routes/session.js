@@ -26,6 +26,7 @@ export default (app) => {
         };
         //console.log(buildFromObj(signInForm, errors));
         //app.log.info(errors);
+        throw new Error(i18next.t('flash.session.create.error'))
         return reply.render('/session', { errors });
       }
       await req.logIn(user);
