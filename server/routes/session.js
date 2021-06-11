@@ -26,7 +26,7 @@ export default (app) => {
         };
 
         app.log.info(errors);
-        reply.render('/session', { signInForm, errors } );
+        return reply.render('/session', { f: buildFromObj({ signInForm, errors })});
       }
       await req.logIn(user);
       req.flash('success', 'Вы залогинены');
