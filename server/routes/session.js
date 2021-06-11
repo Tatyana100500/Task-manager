@@ -14,7 +14,7 @@ export default (app) => {
       reply.render('session/new', { signInForm });
     })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
-    console.log(reply.errorHandler, err, user);
+    console.log(reply, err, user);
       if (err) {
         return app.httpErrors.internalServerError(err);
       }
@@ -23,6 +23,7 @@ export default (app) => {
         const errors = {
           email: [{ message: i18next.t('flash.session.create.error') }],
         };
+
         app.log.info(errors);
         return reply.render('/session', { signInForm, errors } );
       }
