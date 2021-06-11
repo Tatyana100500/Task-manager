@@ -11,11 +11,12 @@ block content
         th(scope="col-1")= t(' ')
     tbody
       each user in users
+      - let i = `"${user.id}"`
         tr
           td= user.id
           td= user.fullName()
           td= user.email
           td= formatDate(user.createdAt)
           td.col-1
-            a(href=route('updateUser', { "id": user.id.toString() }))= t('views.users.updateUser')
-            a(href=route('deleteUser', { "id": user.id.toString() }))= t('views.users.delete')
+            a(href=route('updateUser', { 'id': i }))= t('views.users.updateUser')
+            a(href=route('deleteUser', { 'id': i }))= t('views.users.delete')
