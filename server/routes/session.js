@@ -14,7 +14,7 @@ export default (app) => {
       reply.render('session/new', { signInForm });
     })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
-    console.log(reply, err, user);
+    console.log(reply.request, err, user);
       if (err) {
         return app.httpErrors.internalServerError(err);
       }
