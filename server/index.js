@@ -77,7 +77,7 @@ const addPlugins = (app) => {
   app.register(fastifyReverseRoutes);
   app.register(fastifySecureSession, {
     cookieName: 'session',
-    secret: process.env.APPKEY,
+    secret: process.env.SESSION_KEY,
     cookie: {
       path: '/',
     },
