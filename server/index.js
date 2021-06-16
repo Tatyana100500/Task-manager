@@ -3,7 +3,7 @@
 import path from 'path';
 import fastify from 'fastify';
 import fastifyObjectionjs from 'fastify-objectionjs';
-import fastifySession from 'fastify-secure-session';
+import fastifySecureSession from 'fastify-secure-session';
 import fastifyPassport from 'fastify-passport';
 import fastifyMethodOverride from 'fastify-method-override';
 import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
@@ -75,8 +75,9 @@ const addPlugins = (app) => {
   });
   app.register(fastifyFormbody, { parser: qs.parse });
   app.register(fastifyReverseRoutes);
-  app.register(fastifySession, {
-    secret: process.env.SESSION_KEY,
+  app.register(fastifySecureSession, {
+    cookieName: 'session',
+    secret: process.env.APPKEY,
     cookie: {
       path: '/',
     },
