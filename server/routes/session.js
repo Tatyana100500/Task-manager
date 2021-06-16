@@ -16,11 +16,12 @@ export default (app) => app
       const errors = {
         email: [{ message: i18next.t('flash.session.create.error') }],
       };
+      //req.flash('error', i18next.t('flash.session.create.error'));
       return reply.redirect(app.reverse('root', { signInForm, errors }));
     }
 
     await req.logIn(user);
-    req.flash('success', i18next.t('flash.session.create.success'));
+    req.flashnow('success', i18next.t('flash.session.create.success'));
     return reply.redirect(app.reverse('root'));
   }))
   .delete('/session', (req, reply) => {
