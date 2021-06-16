@@ -1,0 +1,12 @@
+.jumbotron.p-2
+  +formFor()(action=route('tasks') method='get').form-inline
+    +selectList(task, statuses, 'status', t('views.tasks.list.filter.status'))(class="ml-2 mr-3")
+    +selectList(task, executors, 'executor', t('views.tasks.list.filter.executor'))(class="ml-2 mr-3")
+    +selectList(task, labels, 'label', t('views.tasks.list.filter.label'))(class="ml-2 mr-3")
+    .form-group.form-check
+      if task.isCreatorUser
+        input.form-check-input(id="data_isCreatorUser" type="checkbox" name="isCreatorUser" checked)
+      else
+        input.form-check-input(id="data_isCreatorUser" type="checkbox" name="isCreatorUser")
+      label.form-check-label(for="data_isCreatorUser")= t('views.tasks.list.filter.checkbox')
+    +submit()(value=t('views.tasks.list.filter.submit') class='ml-3')

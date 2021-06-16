@@ -1,45 +1,15 @@
-extends /layouts/inner.pug
+extends ../layouts/application.pug
 
-block title
-  title= t('views.pages.tasks.edit.title')
+block header
+  = t('views.tasks.edit.edit')
 
-block main
-  .container
-    .row.justify-content-center
-      .p-3
-        h1= t('views.pages.tasks.edit.header')
-    .row.justify-content-center
-      .col-md-5
-        .shadow-sm.p-3.mb-5.bg-white.rounded
-          form(action= urlFor('updateTask', { id: task.id }) method="POST")
-            input(type="hidden" name="_method" value="PATCH")
-            .form-group
-              label(for="name")= t('views.pages.tasks.name')
-              input(type="text" class="form-control" name="task[name]" id="name" value=task.name)
-            .form-group
-              label(for="status")= t('views.pages.tasks.status')
-              select(class="form-control" id="statusId" name="task[statusId]")
-                each status in statuses
-                  option(type="number" value=status.id selected=status.id === task.statusId)=status.name
-            .form-group
-              label(for="assigned")= t('views.pages.tasks.executor')
-              select(type="number" class="form-control" id="assigned" name='task[executorId]')
-                each user in users
-                  option(value=user.id selected=user.id === task.executorId)=`${user.firstName} ${user.lastName}`
-            .form-group
-              label(for="description")= t('views.pages.tasks.description')
-              textarea(class="form-control" id="description" name="task[description]" rows="5" task.description)= task.description
-            
-            .form-group
-              label(for="labels") Labels
-              select(class="form-control" id="labels" name="task[labels]" multiple)
-                - const activeLabels = taskLabels.map((l) => l.name)
-                each label in labels
-                  option(value=label.id selected=activeLabels.includes(label.name))= label.name
-            
-            .form-group  
-              input(type="hidden" name="task[creatorId]" value=task.creatorId)
-
-            .form-group
-              button(type="submit" class="btn btn-primary")= t('buttons.submit')
-              a(class="ml-2 btn btn-secondary" href= urlFor('tasks') role="button")= t('buttons.cancel')
+block content
+  +formFor()(action=`/tasks/${task.id}` method='post')
+    +input(task, 'name', t('views.tasks.edit.name'), errors)(type="text")
+    .form-group
+        label(for="data_description")= t('views.tasks.edit.description')
+        textarea.form-control(id="data_description" name="data[description]" rows="3")= task.description
+    +select(task, statuses, 'statusId', t('views.tasks.edit.status'), errors)
+    +select(task, executors, 'executorId', t('views.tasks.edit.executor'), errors)
+    +select(task, labels, 'labels', t('views.tasks.edit.labels'), errors)(multiple="multiple")
+    +submitPatch()(value=t('views.tasks.edit.submit'))

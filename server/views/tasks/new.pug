@@ -1,40 +1,15 @@
-extends /layouts/inner.pug
+extends ../layouts/application.pug
 
-block title
-  title= t('views.pages.tasks.add.title')
+block header
+  = t('views.tasks.new.create')
 
-block main
-  .container
-    .row.justify-content-center
-      .p-3
-        h1= t('views.pages.tasks.add.title')
-    .row.justify-content-center
-      .col-md-5
-        .shadow-sm.p-3.mb-5.bg-white.rounded
-          form(action= urlFor('addTask') method="POST")
-            .form-group
-              label(for="name")= t('views.pages.tasks.name')
-              input(type="text" class="form-control" name="task[name]" id="name" value= _.get(task, 'name', ''))
-            .form-group
-              label(for="status")= t('views.pages.tasks.status')
-              select(class="form-control" id="statusId" name="task[statusId]")
-                each status in statuses
-                  option(value=status.id selected= _.get(task, 'statusId', '') === status.id)=status.name
-            .form-group
-              label(for="assigned")= t('views.pages.tasks.executor')
-              select(class="form-control" id="assigned" name='task[executorId]')
-                each user in users
-                  option(value=user.id selected= _.get(task, 'executorId', '') === user.id)=user.fullName()
-            .form-group
-              label(for="description")= t('views.pages.tasks.description')
-              textarea(class="form-control" id="description" name="task[description]" rows="5")= _.get(task, 'description', '')
-            
-            .form-group
-              label(for="labels")= t('views.pages.tasks.labels')
-              select(class="form-control" id="labels" name="task[labels]" multiple)
-                each label in labels
-                  option(value=label.id selected= _.includes(taskLabels, label.id))= label.name
-            
-            .form-group
-              button(type="submit" class="btn btn-primary")= t('buttons.submit')
-              a(class="ml-2 btn btn-secondary" href= urlFor('tasks') role="button")= t('buttons.cancel')
+block content
+  +formFor()(action=route('tasks') method='post')
+    +input(task, 'name', t('views.tasks.new.name'), errors)(type="text")
+    .form-group
+        label(for="data_description")= t('views.tasks.new.description')
+        textarea.form-control(id="data_description" name="data[description]" rows="3")= task.description
+    +select(task, statuses, 'statusId', t('views.tasks.new.status'), errors)
+    +select(task, executors, 'executorId', t('views.tasks.new.executor'), errors)
+    +select(task, labels, 'labels', t('views.tasks.new.labels'), errors)(multiple="multiple")
+    +submit()(value=t('views.tasks.new.submit'))

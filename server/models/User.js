@@ -3,55 +3,74 @@
 import { Model } from 'objection';
 import objectionUnique from 'objection-unique';
 import path from 'path';
-import encrypt from '../lib/secure.js';
+//import encrypt from '../lib/secure.js';
+import objectionPassword from 'objection-password';
 
 const unique = objectionUnique({ fields: ['email'] });
+const password = objectionPassword();
 
-export default class User extends unique(Model) {
+export default class User extends unique(password(Model)) {
   static get tableName() {
     return 'users';
+  }
+
+  getFullName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
+  async $beforeUpdate() {
+    this.updatedAt = new Date().toLocaleString();
   }
 
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['email', 'password'],
+      required: ['firstName', 'lastName', 'email', 'password'],
       properties: {
-        id: { type: 'integer' },
-        email: { type: 'string', format: 'email' },
-        firstName: { type: 'string' },
-        lastName: { type: 'string' },
-        password: { type: 'string', minLength: 3 },
+        firstName: { type: 'string', minLength: 1, maxLength: 255 },
+        lastName: { type: 'string', minLength: 1, maxLength: 255 },
+        email: { type: 'string', minLength: 1, maxLength: 255 },
+        password: { type: 'string', minLength: 7, maxLength: 255 },
+        createdAt: { type: 'string' },
+        updatedAt: { type: 'string' },
       },
     };
   }
-  fullName() {
-    return `${this.firstName} ${this.lastName}`;
-  }
 
-  set password(value) {
-    this.passwordDigest = encrypt(value);
-  }
-
-  verifyPassword(password) {
-    return encrypt(password) === this.passwordDigest;
-  }
-  static relationMappings = {
-    assignedTasks: {
-      relation: Model.HasManyRelation,
-      modelClass: path.join(__dirname, 'Task'),
-      join: {
-        from: 'users.id',
-        to: 'tasks.executor_id',
+  static get relationMappings() {
+    return {
+      status: {
+        relation: Model.HasManyRelation,
+        modelClass: path.join(__dirname, 'status'),
+        join: {
+          from: 'users.id',
+          to: 'statuses.creator_id',
+        },
       },
-    },
-    createdTasks: {
-      relation: Model.HasManyRelation,
-      modelClass: path.join(__dirname, 'Task'),
-      join: {
-        from: 'users.id',
-        to: 'tasks.creator_id',
+      task: {
+        relation: Model.HasManyRelation,
+        modelClass: path.join(__dirname, 'task'),
+        join: {
+          from: 'users.id',
+          to: 'tasks.creator_id',
+        },
       },
-    },
+      task_executor: {
+        relation: Model.HasManyRelation,
+        modelClass: path.join(__dirname, 'task'),
+        join: {
+          from: 'users.id',
+          to: 'tasks.executor_id',
+        },
+      },
+      label: {
+        relation: Model.HasManyRelation,
+        modelClass: path.join(__dirname, 'label'),
+        join: {
+          from: 'users.id',
+          to: 'labels.creator_id',
+        },
+      },
+    };
   }
 }

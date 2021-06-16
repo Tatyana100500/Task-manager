@@ -56,6 +56,7 @@
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^1.4.1",
     "objection": "^2.2.15",
+    "objection-password": "^3.0.0",
     "objection-unique": "^1.2.1",
     "pino-pretty": "^4.7.1",
     "point-of-view": "^4.14.0",
@@ -65,7 +66,8 @@
     "rollbar": "^2.21.1",
     "sqlite3": "^5.0.2",
     "webpack": "^5.31.0",
-    "webpack-build-log-plugin": "^1.0.6"
+    "webpack-build-log-plugin": "^1.0.6",
+    "youch": "^2.2.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.14",

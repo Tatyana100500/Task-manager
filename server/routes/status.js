@@ -1,69 +1,66 @@
 import i18next from 'i18next';
 
-export default (app) => {
-  app.get('/statuses', { name: 'statuses', preHandler: app.authCheck }, async (request, reply) => {
+export default (app) => app
+  .get('/statuses', { name: 'statuses' }, async (req, reply) => {
     const statuses = await app.objection.models.status.query();
     reply.render('statuses/list', { statuses });
-  });
-
-  app.get('/statuses/new', { name: 'newStatus',preHandler: app.authCheck }, async (request, reply) => {
+    return reply;
+  })
+  .get('/statuses/new', { name: 'newStatus' }, (req, reply) => {
     reply.render('statuses/new');
-  });
-
-  app.get('/statuses/:id/edit', { name: 'editStatus', preHandler: app.authCheck }, async (request, reply) => {
+    return reply;
+  })
+  .post('/statuses', async (req, reply) => {
     try {
-      const status = await app.objection.models.status
-        .query()
-        .findById(request.params.id);
-      if (!status) {
-        reply.code(404).render('notFound');
-      }
-      reply.render('statuses/edit', { status });
-    } catch (e) {
-      request.flash('error', i18next.t('views.pages.statuses.edit.error'));
-      reply.redirect(app.reverse('statuses'));
-    }
-  });
+      const { id } = req.user;
+      const { models } = app.objection;
 
-  app.post('/statuses', { name: 'addStatus', preHandler: app.authCheck }, async (request, reply) => {
-    try {
-      await app.objection.models.status.query().insert(request.body.status);
-      request.flash('success', i18next.t('views.pages.statuses.add.success'));
-      reply.redirect(app.reverse('statuses'));
-    } catch {
-      request.flash('error', i18next.t('views.pages.statuses.add.error'));
-      reply.render('statuses/new', { status: request.body });
-    }
-  });
+      const status = await models.status.fromJson(req.body.data);
+      const user = await models.user.query().findById(id);
 
-  app.delete('/statuses/:id', { name: 'deleteStatus', preHandler: app.authCheck }, async (request, reply) => {
-    try {
-      const relatedTasks = await app.objection.models.status.relatedQuery('tasks').for(request.params.id);
-      if (relatedTasks.length > 0) {
-        request.flash('error', i18next.t('views.pages.statuses.delete.errUsed'));
-      } else {
-        await app.objection.models.status.query().deleteById(request.params.id);
-        request.flash('success', i18next.t('views.pages.statuses.delete.success'));
-      }
-      reply.redirect(app.reverse('statuses'));
-    } catch (e) {
-      request.log.error(e);
-      request.flash('error', i18next.t('views.pages.statuses.delete.error'));
-      reply.redirect(app.reverse('statuses'));
-    }
-  });
+      await user.$relatedQuery('status').insert(status);
 
-  app.patch('/statuses/:id', { name: 'updateStatus', preHandler: app.authCheck }, async (request, reply) => {
-    try {
-      const status = await app.objection.models.status
-        .query()
-        .findById(request.params.id);
-      await status.$query().update(request.body.status);
-      request.flash('success', i18next.t('views.pages.statuses.edit.success'));
+      req.flash('info', i18next.t('flash.statuses.create.success'));
       reply.redirect(app.reverse('statuses'));
-    } catch {
-      request.flash('error', i18next.t('views.pages.statuses.edit.error'));
-      reply.redirect(app.reverse('editStatus', { id: request.params.id }));
+
+      return reply;
+    } catch (error) {
+      req.flash('error', i18next.t('flash.statuses.create.error'));
+      reply.render('statuses/new', { user: req.body.data, errors: error.data });
+      return reply;
     }
+  })
+  .get('/statuses/:id/edit', async (req, reply) => {
+    const { id } = req.params;
+    const status = await app.objection.models.status.query().findById(id);
+    reply.render('statuses/edit', { status });
+    return reply;
+  })
+  .patch('/statuses/:id', async (req, reply) => {
+    const { id } = req.params;
+    try {
+      const { models } = app.objection;
+
+      const patchForm = await models.status.fromJson(req.body.data);
+      const status = await models.status.query().findById(id);
+
+      await status.$query().update(patchForm);
+
+      req.flash('info', i18next.t('flash.statuses.edit.success'));
+      reply.redirect(app.reverse('statuses'));
+
+      return reply;
+    } catch ({ data }) {
+      req.body.data.id = id;
+      req.flash('error', i18next.t('flash.statuses.edit.error'));
+      reply.render('statuses/edit', { status: req.body.data, errors: data });
+      return reply;
+    }
+  })
+  .delete('/statuses/:id', async (req, reply) => {
+    const { id } = req.params;
+    await app.objection.models.status.query().deleteById(id);
+    req.flash('info', i18next.t('flash.statuses.delete.success'));
+    reply.redirect(app.reverse('statuses'));
+    return reply;
   });
-};

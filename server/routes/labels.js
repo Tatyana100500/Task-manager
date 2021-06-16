@@ -1,68 +1,64 @@
 import i18next from 'i18next';
 
-export default (app) => {
-  app.get('/labels', { name: 'labels', preHandler: app.authCheck }, async (req, reply) => {
+export default (app) => app
+  .get('/labels', { name: 'labels' }, async (req, reply) => {
     const labels = await app.objection.models.label.query();
     reply.render('labels/list', { labels });
-  });
-
-  app.get('/labels/new', { name: 'newLabel', preHandler: app.authCheck }, async (req, reply) => {
+    return reply;
+  })
+  .get('/labels/new', { name: 'newLabel' }, (req, reply) => {
     reply.render('labels/new');
-  });
-
-  app.get('/labels/:id/edit', { name: 'editLabel', preHandler: app.authCheck }, async (req, reply) => {
+    return reply;
+  })
+  .post('/labels', async (req, reply) => {
     try {
-      const label = await app.objection.models.label.query().findById(req.params.id);
-      if (!label) {
-        reply.code(404).render('notFound');
-      }
-      reply.render('labels/edit', { label });
-    } catch {
-      req.flash('error', i18next.t('views.pages.labels.edit.error'));
-      reply.redirect(app.reverse('labels'));
-    }
-  });
+      const { id } = req.user;
+      const label = await app.objection.models.label.fromJson(req.body.data);
+      const user = await app.objection.models.user.query().findById(id);
 
-  app.post('/labels', { name: 'addLabel', preHandler: app.authCheck }, async (req, reply) => {
+      await user.$relatedQuery('label').insert(label);
+
+      req.flash('info', i18next.t('flash.labels.create.success'));
+      reply.redirect(app.reverse('labels'));
+      return reply;
+    } catch ({ data }) {
+      req.flash('error', i18next.t('flash.labels.create.error'));
+      reply.render('labels/new', { user: req.body.data, errors: data });
+      return reply;
+    }
+  })
+  .get('/labels/:id/edit', async (req, reply) => {
+    const { id } = req.params;
+    const label = await app.objection.models.label.query().findById(id);
+    reply.render('labels/edit', { label });
+    return reply;
+  })
+  .patch('/labels/:id', async (req, reply) => {
+    const { id } = req.params;
     try {
-      await app.objection.models.label.query().insert(req.body.label);
-      req.flash('success', i18next.t('views.pages.labels.add.success'));
-      reply.redirect(app.reverse('labels'));
-    } catch {
-      req.flash('error', i18next.t('views.pages.labels.add.error'));
-      reply.render('labels/new', { label: req.body });
-    }
-  });
+      const patchForm = await app.objection.models.label.fromJson(req.body.data);
+      const label = await app.objection.models.label.query().findById(id);
 
-  app.patch('/labels/:id', { name: 'updateLabel', preHandler: app.authCheck }, async (req, reply) => {
+      await label.$query().update(patchForm);
+
+      req.flash('info', i18next.t('flash.labels.edit.success'));
+      reply.redirect(app.reverse('labels'));
+      return reply;
+    } catch ({ data }) {
+      req.body.data.id = id;
+      req.flash('error', i18next.t('flash.labels.edit.error'));
+      reply.render('labels/edit', { label: req.body.data, errors: data });
+      return reply;
+    }
+  })
+  .delete('/labels/:id', async (req, reply) => {
+    const { id } = req.params;
     try {
-      const label = await app.objection.models.label
-        .query()
-        .findById(req.params.id);
-
-      await label.$query().patch(req.body.label);
-      req.flash('success', i18next.t('views.pages.labels.edit.success'));
-      reply.redirect(app.reverse('labels'));
-    } catch (e) {
-      req.flash('error', i18next.t('views.pages.labels.edit.error'));
-      reply.redirect(app.reverse('editLabel', { id: req.params.id }));
+      await app.objection.models.label.query().deleteById(id);
+      req.flash('info', i18next.t('flash.labels.delete.success'));
+    } catch (error) {
+      req.flash('error', i18next.t('flash.labels.delete.error'));
     }
+    reply.redirect(app.reverse('labels'));
+    return reply;
   });
-
-  app.delete('/labels/:id', { name: 'deleteLabel', preHandler: app.authCheck }, async (req, reply) => {
-    try {
-      const relatedTasks = await app.objection.models.label.relatedQuery('tasks').for(req.params.id);
-      if (relatedTasks.length > 0) {
-        req.flash('error', i18next.t('views.pages.labels.delete.errUsed'));
-      } else {
-        await app.objection.models.label.query().deleteById(req.params.id);
-        req.flash('success', i18next.t('views.pages.labels.delete.success'));
-      }
-      reply.redirect(app.reverse('labels'));
-    } catch (e) {
-      req.log.error(e);
-      req.flash('error', i18next.t('views.pages.labels.delete.error'));
-      reply.redirect(app.reverse('labels'));
-    }
-  });
-};

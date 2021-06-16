@@ -1,40 +1,21 @@
-extends /layouts/inner.pug
-block title
-  title= t('views.pages.users.title')
+extends ../layouts/application.pug
 
-block main
-  .container
-    .row.justify-content-center
-      .p-3
-        h1= t('views.pages.users.header')
-    .row.justify-content-center
-      .col-10.shadow-sm.p-3.mb-5.bg-white.rounded
-        .table-responsive-sm
-          table.table
-            thead
-              tr
-                th(scope="col-1")= t('views.pages.users.firstName')
-                th(scope="col-1")= t('views.pages.users.lastName')
-                th(scope="col-1")= t('views.pages.users.email')
-                th(scope="col-1")
-                th(scope="col-1")
-            tbody
-              each user in users
-                tr
-                  td= user.firstName
-                  td= user.lastName
-                  td= user.email
-                  td.col-1
-                    a(href=urlFor('editUser', { id: user.id }) class="btn btn-secondary")
-                      = t('buttons.edit')
-                  td.col-1
-                    .d-flex.justify-content-end
-                      button(class="btn btn-danger" data-toggle="modal" data-target=`#delete-${user.id}` value="Delete profile")= t('buttons.delete')
-                      .modal.fade(id=`delete-${user.id}` tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true")
-                        .modal-dialog(role="document")
-                          .modal-content
-                            .modal-body
-                              h5= t('views.pages.users.warning')
-                            .modal-footer
-                              button(type="button" class="btn btn-secondary" data-dismiss="modal")= t('buttons.cancel')
-                              a(href= urlFor('deleteUser', { id: user.id}) data-method="delete" class="btn btn-danger")= t('buttons.delete')
+block content
+  table.table.table-hover
+    thead
+      tr
+        th(scope='col')= t('views.users.list.id')
+        th(scope='col')= t('views.users.list.fullname')
+        th(scope='col')= t('views.users.list.email')
+        th(scope='col')= t('views.users.list.createdAt')
+        th
+    tbody
+      each user in users
+        tr
+          td= user.id
+          td= user.getFullName()
+          td= user.email
+          td= formatDate(user.createdAt)
+          td
+            a(href=`/users/${user.id}/edit`)= t('views.users.list.edit')
+            +buttonTo(`/users/${user.id}`, 'delete')(value=t('views.users.list.delete') class="btn btn-link")

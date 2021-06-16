@@ -1,47 +1,39 @@
 
 // @ts-check
-//import _ from 'lodash/fp.js';
-import dotenv from 'dotenv';
 import path from 'path';
 import fastify from 'fastify';
-import fastifyStatic from 'fastify-static';
-import fastifyErrorPage from 'fastify-error-page';
-import pointOfView from 'point-of-view';
-import fastifyFormbody from 'fastify-formbody';
-import fastifySecureSession from 'fastify-secure-session';
-import fastifyPassport from 'fastify-passport';
-import fastifySensible from 'fastify-sensible';
-//import fastifyFlash from 'fastify-flash';
-import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
-import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
-import qs from 'qs';
+import fastifySession from 'fastify-secure-session';
+import fastifyPassport from 'fastify-passport';
+import fastifyMethodOverride from 'fastify-method-override';
+import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
+import fastifyFormbody from 'fastify-formbody';
+import fastifyStatic from 'fastify-static';
+import pointOfView from 'point-of-view';
+import dotenv from 'dotenv';
 import Pug from 'pug';
+import Youch from 'youch';
 import i18next from 'i18next';
+import Rollbar from 'rollbar';
+import qs from 'qs';
+import _ from 'lodash';
 import ru from './locales/ru.js';
+
 // @ts-ignore
 import webpackConfig from '../webpack.config.babel.js';
-import Rollbar from 'rollbar';
+
 import addRoutes from './routes/index.js';
 import getHelpers from './helpers/index.js';
-import knexConfig from '../knexfile.js';
-import models from './models/index.js';
+import knexConfig from '../knexfile';
+import entitiesModels from './models';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';
-import createError from 'http-errors';
-import debug from 'debug';
-const log = debug('my-url');
 
-dotenv.config({ debug: true });
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
 const isDevelopment = mode === 'development';
-const rollbar = new Rollbar({
-  accessToken: process.env.ROLLBAR,
-  captureUncaught: true,
-  captureUnhandledRejections: true,
-});
+dotenv.config();
 
-const setUpViews = (app) => {
+const setupViews = (app) => {
   const { devServer } = webpackConfig;
   const devHost = `http://${devServer.host}:${devServer.port}`;
   const domain = isDevelopment ? devHost : '';
@@ -54,28 +46,12 @@ const setUpViews = (app) => {
     defaultContext: {
       ...helpers,
       assetPath: (filename) => `${domain}/assets/${filename}`,
-      //t(key) {
-       // return i18next.t(key);
-      ///},
-      //_,
-      //currentUser: app.currentUser,
     },
     templates: path.join(__dirname, '..', 'server', 'views'),
   });
 
   app.decorateReply('render', function render(viewPath, locals) {
-    console.log(viewPath, locals);
     this.view(viewPath, { ...locals, reply: this });
-  });
-};
-
-const setUpStaticAssets = (app) => {
-  const pathPublic = isProduction
-    ? path.join(__dirname, '..', 'public')
-    : path.join(__dirname, '..', 'dist', 'public');
-  app.register(fastifyStatic, {
-    root: pathPublic,
-    prefix: '/assets/',
   });
 };
 
@@ -91,48 +67,27 @@ const setupLocalization = () => {
     });
 };
 
-const addHooks = (app) => {
-  app.decorateRequest('currentUser', null);
-  //app.decorateRequest('isAuthenticated', false);
-  app.decorateRequest('createError', createError);
-  app.addHook('preHandler', async (req, reply) => {
-    //const userId = reply.session.get('userId');
-    const [errors = {}] = reply.flash('error') || [];
-    const [values = {}] = reply.flash('value') || [];
-    const flash = reply.flash('flash') || [];
-    //if (userId) {
-      reply.locals = {
-      //currentUser: await app.objection.models.user.query().findById(userId),
-      isAuthenticated: () => req.isAuthenticated(),
-      flash,
-      errors,
-      values,
-    }
-    
-    //}
+const addPlugins = (app) => {
+  app.register(fastifyObjectionjs, {
+    knexConfig: knexConfig()[mode],
+    models: entitiesModels,
   });
-};
-
-const registerPlugins = (app) => {
-  app.register(fastifySensible);
-  app.register(fastifyErrorPage);
-  app.register(fastifyReverseRoutes);
   app.register(fastifyFormbody, { parser: qs.parse });
-  app.register(fastifySecureSession, {
-    //cookieName: 'session',
+  app.register(fastifyReverseRoutes);
+  app.register(fastifySession, {
     secret: process.env.SESSION_KEY,
     cookie: {
       path: '/',
     },
   });
-  //app.register(fastifyFlash);
+  app.register(fastifyPassport.initialize());
+  app.register(fastifyPassport.secureSession());
+  fastifyPassport.registerUserSerializer((user) => Promise.resolve(user));
   fastifyPassport.registerUserDeserializer(
     (user) => app.objection.models.user.query().findById(user.id),
   );
-  fastifyPassport.registerUserSerializer((user) => Promise.resolve(user));
   fastifyPassport.use(new FormStrategy('form', app));
-  app.register(fastifyPassport.initialize());
-  app.register(fastifyPassport.secureSession());
+  app.register(fastifyMethodOverride);
   app.decorate('fp', fastifyPassport);
   app.decorate('authenticate', (...args) => fastifyPassport.authenticate(
     'form',
@@ -143,10 +98,100 @@ const registerPlugins = (app) => {
   // @ts-ignore
   )(...args));
 
-  app.register(fastifyMethodOverride);
-  app.register(fastifyObjectionjs, {
-    knexConfig: knexConfig[mode],
-    models,
+  app.decorate('container', new Map());
+
+  app.decorateRequest('errors', (data = []) => {
+    app.container.set('errors', data);
+  });
+
+  app.decorateRequest('entity', (type, data = []) => {
+    app.container.set(type, data);
+  });
+
+  app.decorateReply('errors', () => {
+    const data = app.container.has('errors')
+      ? app.container.get('errors')
+      : [];
+    app.container.set('errors', []);
+    return data;
+  });
+
+  app.decorateReply('entity', (type) => {
+    const data = app.container.has(type)
+      ? app.container.get(type)
+      : [];
+    app.container.delete(type);
+    return data;
+  });
+
+  app.decorateRequest('getTaskData', async (task) => {
+    const { models } = app.objection;
+    const {
+      creatorId,
+      executorId,
+      statusId,
+    } = task;
+    const creator = await models.user.query().findById(creatorId);
+    const executor = executorId ? await models.user.query().findById(executorId) : '';
+    const status = await models.status.query().findById(statusId);
+    const labels = await task.$relatedQuery('labels');
+
+    return {
+      id: task.id,
+      name: task.name,
+      creator: creator.getFullName(),
+      executor: executor ? executor.getFullName() : '',
+      status: status.name,
+      labels: labels.map((label) => label.name),
+      description: task.description,
+      createdAt: task.createdAt,
+    };
+  });
+};
+
+const addHooks = (app) => {
+  app.addHook('preHandler', async (req, reply) => {
+    reply.locals = {
+      isAuthenticated: () => req.isAuthenticated(),
+    };
+  });
+
+  app.addHook('preHandler', async (req) => {
+    const { body } = req;
+    if (body) {
+      body.data = _.omitBy(body.data, (value) => _.isEqual(value, ''));
+    }
+  });
+};
+
+const setErrorHandler = (app) => {
+  const rollbar = new Rollbar({
+    accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
+    captureUncaught: true,
+    captureUnhandledRejections: true,
+  });
+
+  app.setErrorHandler((err, req, reply) => {
+    rollbar.error(err, req, reply);
+    try {
+      const youch = new Youch(err, req.raw);
+      youch.toHTML().then((html) => {
+        reply.type('text/html');
+        reply.send(html);
+      });
+    } catch (error) {
+      reply.send(error);
+    }
+  });
+};
+
+const setupStaticAssets = (app) => {
+  const pathPublic = isProduction
+    ? path.join(__dirname, '..', 'public')
+    : path.join(__dirname, '..', 'dist', 'public');
+  app.register(fastifyStatic, {
+    root: pathPublic,
+    prefix: '/assets/',
   });
 };
 
@@ -157,19 +202,13 @@ export default () => {
     },
   });
 
-  registerPlugins(app);
-
   setupLocalization();
-  setUpViews(app);
-  setUpStaticAssets(app);
+  setupStaticAssets(app);
+  setupViews(app);
+  addPlugins(app);
   addRoutes(app);
   addHooks(app);
-  //if (mode === 'production') {
-    app.setErrorHandler((error, req, reply) => {
-      console.log('!!!!!!!!!!!!', error)
-      rollbar.error(error);
-      reply.send(error);
-    });
-  //}
+  setErrorHandler(app);
+
   return app;
 };

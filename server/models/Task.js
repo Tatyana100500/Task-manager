@@ -1,97 +1,105 @@
-import { Model } from 'objection';
+//import { Model } from 'objection';
 import Label from './Label';
 import Status from './Status';
 import User from './User';
+import path from 'path';
+import { Model, AjvValidator } from 'objection';
+// import objectionUnique from 'objection-unique';
+
+// const unique = objectionUnique({ fields: ['name'] });
 
 export default class Task extends Model {
   static get tableName() {
     return 'tasks';
   }
 
-  static get jsonSchema() {
+  static get modifiers() {
     return {
-      type: 'object',
-      required: ['name', 'statusId', 'creatorId'],
-      properties: {
-        id: { type: 'integer' },
-        name: { type: 'string', minLength: 1 },
-        description: { type: 'string' },
-        statusId: { type: 'integer' },
-        creatorId: { type: 'integer' },
-        executorId: { type: 'integer' },
+      byStatus(query, stutusid) {
+        if (stutusid) query.where('statusId', stutusid);
+      },
+      byExecutor(query, executorId) {
+        if (executorId) query.where('executorId', executorId);
+      },
+      byLabel(query, labelId, knex) {
+        if (labelId) query.whereExists(knex('task_labels').whereRaw('label_id = ?', labelId).whereRaw('task_labels.task_id = tasks.id'));
+      },
+      byCreator(query, isCreatorUser, userId) {
+        if (isCreatorUser) query.where('creatorId', userId);
       },
     };
   }
 
-  static relationMappings = {
-    status: {
-      relation: Model.HasOneRelation,
-      modelClass: Status,
-      join: {
-        from: 'tasks.status_id',
-        to: 'statuses.id',
+  static createValidator() {
+    return new AjvValidator({
+      onCreateAjv: (avj) => avj,
+      options: {
+        allErrors: true,
+        validateSchema: true,
+        ownProperties: true,
+        coerceTypes: 'array',
+        nullable: true,
       },
-    },
-    creator: {
-      relation: Model.BelongsToOneRelation,
-      modelClass: User,
-      join: {
-        from: 'tasks.creator_id',
-        to: 'users.id',
-      },
-    },
-    executor: {
-      relation: Model.BelongsToOneRelation,
-      modelClass: User,
-      join: {
-        from: 'tasks.executor_id',
-        to: 'users.id',
-      },
-    },
-    labels: {
-      relation: Model.ManyToManyRelation,
-      modelClass: Label,
-      join: {
-        from: 'tasks.id',
-        through: {
-          from: 'tasks_labels.taskId',
-          to: 'tasks_labels.labelId',
-        },
-        to: 'labels.id',
-      },
-    },
+    });
   }
 
-  static modifiers = {
-    findByStatus(query, { statusId }) {
-      if (!statusId) {
-        return query;
-      }
-      return query.where({ statusId });
-    },
-    // findByLabel(query, labelId, app) {
-    //   query.whereIn('tasks.id', app.objection
-    //     .knex('tasks_labels')
-    //     .select('task_id')
-    //     .where('label_id', labelId));
-    // },
-    findByLabel(query, { labelId }) {
-      if (!labelId) {
-        return query;
-      }
-      return query.where({ labelId });
-    },
-    findByExecutor(query, { executorId }) {
-      if (!executorId) {
-        return query;
-      }
-      return query.where({ executorId });
-    },
-    findByCreator(query, { creatorId }) {
-      if (!creatorId) {
-        return query;
-      }
-      return query.where({ creatorId });
-    },
+  async $beforeUpdate() {
+    this.updatedAt = new Date().toLocaleString();
+  }
+
+  static get jsonSchema() {
+    return {
+      type: 'object',
+      required: ['name', 'statusId'],
+      properties: {
+        name: { type: 'string', minLength: 1, maxLength: 255 },
+        creatorId: { type: 'integer' },
+        description: { type: 'string' },
+        performerId: { type: 'integer' },
+        statusId: { type: 'integer', minimum: 1, default: null },
+        labels: { type: 'array', default: [] },
+      },
+    };
+  }
+
+  static get relationMappings() {
+    return {
+      creator: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: path.join(__dirname, 'user'),
+        join: {
+          from: 'tasks.creator_id',
+          to: 'users.id',
+        },
+      },
+      executor: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: path.join(__dirname, 'user'),
+        join: {
+          from: 'tasks.executor_id',
+          to: 'users.id',
+        },
+      },
+      labels: {
+        relation: Model.ManyToManyRelation,
+        modelClass: path.join(__dirname, 'label'),
+        join: {
+          from: 'tasks.id',
+          through: {
+            from: 'task_labels.task_id',
+            to: 'task_labels.label_id',
+          },
+          to: 'labels.id',
+        },
+      },
+      status: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: path.join(__dirname, 'status'),
+        join: {
+          from: 'tasks.status_id',
+          to: 'statuses.id',
+        },
+      },
+    };
   }
 }

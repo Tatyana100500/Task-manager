@@ -1,171 +1,167 @@
-import _ from 'lodash';
+import { UniqueViolationError } from 'objection';
 import i18next from 'i18next';
+import _ from 'lodash';
 
-export default (app) => {
-  app.get('/tasks', { name: 'tasks', preHandler: app.authCheck }, async (request, reply) => {
-    const query = _.get(request, 'query', null);
-    const filter = _.omitBy(query, (e) => e === 'null');
-    const tasks = await app.objection.models.task
-      .query()
-      .withGraphJoined('[creator, executor, status, labels]')
-      .modify([
-        'findByLabel',
-        'findByStatus',
-        'findByExecutor',
-        'findByCreator',
-      ], filter);
-    const statuses = await app.objection.models.status.query();
-    const labels = await app.objection.models.label.query();
-    const users = await app.objection.models.user.query();
+export default (app) => app
+  .get('/tasks', { name: 'tasks' }, async (req, reply) => {
+    const { models } = app.objection;
+    const { knex } = app.objection;
+    const { id } = req.user;
+
+    const executors = await models.user.query();
+    const statuses = await models.status.query();
+    const lbs = await models.label.query();
+    const task = reply.request.query || new models.task();
+
+    const {
+      executor,
+      status,
+      label,
+      isCreatorUser,
+    } = task;
+    const tsks = await models.task.query()
+      .modify('byStatus', status)
+      .modify('byExecutor', executor)
+      .modify('byLabel', label, knex)
+      .modify('byCreator', isCreatorUser, id)
+      .orderBy('id');
+
+    const formatedTasks = tsks.map(req.getTaskData);
+    const tasks = await Promise.all(formatedTasks);
+
     reply.render('tasks/list', {
+      task,
       tasks,
+      executors,
+      statuses,
+      labels: lbs,
+    });
+    return reply;
+  })
+  .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
+    const { models } = app.objection;
+    const task = reply.entity('task') || new app.objection.models.task();
+    const executors = await models.user.query();
+    const statuses = await models.status.query();
+    const labels = await models.label.query();
+    const errors = reply.errors();
+
+    reply.render('tasks/new', {
+      task,
+      executors,
       statuses,
       labels,
-      users,
+      errors,
     });
-  });
-
-  app.get('/tasks/new', { name: 'newTask', preHandler: app.authCheck }, async (request, reply) => {
-    const users = await app.objection.models.user.query();
-    const statuses = await app.objection.models.status.query();
-    const labels = await app.objection.models.label.query();
-    reply.render('tasks/new', { users, statuses, labels });
-  });
-
-  app.get('/tasks/:id', { name: 'viewTask', preHandler: app.authCheck }, async (request, reply) => {
+    return reply;
+  })
+  .post('/tasks', async (req, reply) => {
     try {
-      const task = await app.objection.models.task
-        .query()
-        .findById(request.params.id)
-        .withGraphJoined('[creator, executor, status, labels]');
-      reply.render('tasks/task', { task });
-    } catch {
-      request.flash(i18next.t('views.pages.tasks.get.error'));
-      reply.redirect(app.reverse('tasks'));
-    }
-  });
+      const { id } = req.user;
+      const { models } = app.objection;
+      const { knex } = app.objection;
 
-  app.get('/tasks/:id/edit', { name: 'editTask', preHandler: app.authCheck }, async (request, reply) => {
-    const task = await app.objection.models.task
-      .query()
-      .findById(request.params.id);
-    if (!task) {
-      reply.code(404).render('notFound');
+      const task = await models.task.fromJson(req.body.data);
+      const user = await models.user.query().findById(id);
+
+      const labels = task.labels.map((value) => ({ id: value }));
+      task.labels = labels;
+
+      await knex.transaction(async (trx) => {
+        await user.$relatedQuery('task', trx).insertGraph(task, { relate: ['labels'] });
+      });
+
+      req.flash('info', i18next.t('flash.tasks.create.success'));
+      reply.redirect(app.reverse('tasks'));
+      return reply;
+    } catch (error) {
+      if (error instanceof UniqueViolationError) {
+        error.data = { name: [{ message: 'name already in use' }] };
+      }
+      req.flash('error', i18next.t('flash.tasks.create.error'));
+      req.errors(error.data);
+      req.entity('task', req.body.data);
+      reply.redirect(app.reverse('newTask'));
+      return reply;
     }
-    const labels = await app.objection.models.label.query();
-    const taskLabels = await task.$relatedQuery('labels');
-    const users = await app.objection.models.user.query();
-    const statuses = await app.objection.models.status.query();
+  })
+  .get('/tasks/:id', async (req, reply) => {
+    const { id } = req.params;
+    const task = await app.objection.models.task.query().findById(id);
+
+    const taskData = await req.getTaskData(task);
+    reply.render('tasks/view', { task: taskData });
+    return reply;
+  })
+  .get('/tasks/:id/edit', async (req, reply) => {
+    const { id } = req.params;
+    const { models } = app.objection;
+    const task = await models.task.query().findById(id).withGraphFetched('labels');
+    _.update(task, 'labels', (labels) => labels.map((label) => label.id));
+
+    const executors = await models.user.query();
+    const statuses = await models.status.query();
+    const labels = await models.label.query();
+    const errors = reply.errors();
+
     reply.render('tasks/edit', {
       task,
-      users,
+      executors,
       statuses,
       labels,
-      taskLabels,
+      errors,
     });
-  });
-
-  app.post('/tasks', { name: 'addTask', preHandler: app.authCheck }, async (request, reply) => {
-    const taskBody = request.body.task;
-    const labelsId = _.has(taskBody, 'labels') ? [...taskBody.labels] : [];
-    const data = {
-      name: taskBody.name,
-      description: taskBody.description,
-      creatorId: request.currentUser.id,
-      statusId: parseInt(taskBody.statusId, 10),
-      executorId: parseInt(taskBody.executorId, 10),
-    };
-    const { task, label } = app.objection.models;
-    const insert = async (taskModel, labelModel, db) => {
-      const labels = await labelModel.query(db).findByIds(labelsId);
-      await taskModel
-        .query(db)
-        .insertGraph({ ...data, labels }, { relate: true });
-    };
-    const trx = await task.startTransaction();
-    try {
-      await insert(task, label, trx);
-      await trx.commit();
-      request.flash('success', i18next.t('views.pages.tasks.add.success'));
-      reply.redirect(app.reverse('tasks'));
-    } catch (e) {
-      await trx.rollback();
-      request.log.error(e);
-      request.flash('error', i18next.t('views.pages.tasks.add.error'));
-      const labels = await app.objection.models.label.query();
-      const taskLabels = labelsId.map(parseInt);
-      const users = await app.objection.models.user.query();
-      const statuses = await app.objection.models.status.query();
-      reply.render('tasks/new', {
-        task: data,
-        users,
-        statuses,
-        taskLabels,
-        labels,
-      });
-    }
     return reply;
-  });
-
-  app.patch('/tasks/:id', { name: 'updateTask', preHandler: app.authCheck }, async (request, reply) => {
-    const taskBody = request.body.task;
-    const labelsId = _.has(taskBody, 'labels') ? [...taskBody.labels] : [];
-    const data = {
-      ...taskBody,
-      id: _.parseInt(request.params.id),
-      executorId: _.parseInt(taskBody.executorId),
-      statusId: _.parseInt(taskBody.statusId),
-      creatorId: _.parseInt(taskBody.creatorId),
-    };
-    const { task, label } = app.objection.models;
-    const update = async (taskModel, labelModel, db) => {
-      const labels = await labelModel.query(db).findByIds(labelsId);
-      await taskModel.query(db).upsertGraph({
-        ...data,
-        labels,
-      }, { relate: true, unrelate: true, noUpdate: ['labels'] });
-    };
-    const trx = await task.startTransaction();
+  })
+  .patch('/tasks/:id', async (req, reply) => {
+    const { id } = req.params;
     try {
-      await update(task, label, trx);
-      await trx.commit();
-      request.flash('success', i18next.t('views.pages.tasks.edit.success'));
-      reply.redirect(app.reverse('tasks'));
-    } catch (e) {
-      trx.rollback();
-      request.log.error(e);
-      request.flash('error', i18next.t('views.pages.tasks.edit.error'));
-      const labels = await app.objection.models.label.query();
-      const users = await app.objection.models.user.query();
-      const taskLabels = await label.query().findByIds(data.labels);
-      const statuses = await app.objection.models.status.query();
-      reply.render('tasks/edit', {
-        task: data,
-        users,
-        statuses,
-        labels,
-        taskLabels,
+      const { models } = app.objection;
+      const { knex } = app.objection;
+
+      const task = await models.task.query().findById(id);
+      const updateData = await models.task.fromJson(req.body.data);
+      updateData.labels = updateData.labels.map((value) => ({ id: value }));
+      updateData.id = task.id;
+
+      await knex.transaction(async (trx) => {
+        await models.task.query(trx).upsertGraph(updateData, {
+          relate: true,
+          update: true,
+          unrelate: true,
+        });
       });
-    }
-    return reply;
-  });
 
-  app.delete('/tasks/:id', { name: 'deleteTask', preHandler: app.authCheck }, async (request, reply) => {
-    const targetTask = await app.objection.models.task.query().findById(request.params.id);
-    if (request.currentUser.id !== targetTask.creatorId) {
-      request.flash('error', i18next.t('views.pages.tasks.delete.notOwnerError'));
+      req.flash('info', i18next.t('flash.tasks.edit.success'));
       reply.redirect(app.reverse('tasks'));
-      return;
+
+      return reply;
+    } catch (error) {
+      req.flash('error', i18next.t('flash.tasks.edit.error'));
+      req.errors(error.data);
+      req.entity('task', req.body.data);
+      reply.redirect(`/tasks/${id}/edit`);
+      return reply;
     }
-    try {
-      await app.objection.models.task
-        .query()
-        .deleteById(request.params.id);
-      request.flash('success', i18next.t('views.pages.tasks.delete.success'));
-      reply.redirect(app.reverse('tasks'));
-    } catch {
-      request.flash('error', i18next.t('views.pages.tasks.delete.error'));
-      reply.redirect(app.reverse('tasks'));
+  })
+  .delete('/tasks/:id', async (req, reply) => {
+    const { id } = req.params;
+    const { models } = app.objection;
+    const { creatorId } = await models.task.query().findById(id).withGraphFetched('labels');
+    const userId = req.user.id;
+
+    if (userId === creatorId) {
+      await models.task.query().upsertGraph({
+        id,
+        labels: [],
+      }, {
+        unrelate: true,
+      });
+      await models.task.query().deleteById(id);
+      req.flash('info', i18next.t('flash.tasks.delete.success'));
+    } else {
+      req.flash('error', i18next.t('flash.tasks.delete.error.authError'));
     }
+
+    reply.redirect(app.reverse('tasks'));
   });
-};
