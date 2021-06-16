@@ -21,7 +21,7 @@ export default (app) => app
 
     await req.logIn(user);
     req.flash('success', i18next.t('flash.session.create.success'));
-    return reply.redirect(app.reverse('/'));
+    return reply.redirect(app.reverse('welcome/index'));
   }))
   .delete('/session', (req, reply) => {
     req.logOut();
