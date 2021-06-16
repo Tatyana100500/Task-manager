@@ -31,7 +31,7 @@ import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
 const isDevelopment = mode === 'development';
-dotenv.config();
+dotenv.config( {debug: true} );
 
 const setupViews = (app) => {
   const { devServer } = webpackConfig;
@@ -51,6 +51,7 @@ const setupViews = (app) => {
   });
 
   app.decorateReply('render', function render(viewPath, locals) {
+    console.log(viewPath, locals)
     this.view(viewPath, { ...locals, reply: this });
   });
 };
