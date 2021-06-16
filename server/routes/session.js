@@ -16,7 +16,7 @@ export default (app) => app
       const errors = {
         email: [{ message: i18next.t('flash.session.create.error') }],
       };
-      return reply.redirect(app.reverse('session', { signInForm, errors }));
+      return reply.redirect(app.reverse('root', { signInForm, errors }));
     }
 
     await req.logIn(user);
