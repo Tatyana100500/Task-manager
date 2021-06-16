@@ -21,7 +21,7 @@ export default (app) => app
     }
 
     await req.logIn(user);
-    req.flash.now('success', i18next.t('flash.session.create.success'));
+    req.flash('success', i18next.t('flash.session.create.success'));
     return reply.redirect(app.reverse('root'));
   }))
   .delete('/session', (req, reply) => {
