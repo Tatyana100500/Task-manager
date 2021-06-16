@@ -16,12 +16,12 @@ export default (app) => app
       const errors = {
         email: [{ message: i18next.t('flash.session.create.error') }],
       };
-      return reply.render('/new', { signInForm, errors });
+      return reply.render('session/new', { signInForm, errors });
     }
 
     await req.logIn(user);
     req.flash('success', i18next.t('flash.session.create.success'));
-    return reply.redirect(app.reverse('root'));
+    return reply.redirect(app.reverse('/'));
   }))
   .delete('/session', (req, reply) => {
     req.logOut();
