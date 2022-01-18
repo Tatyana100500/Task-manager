@@ -1,48 +1,38 @@
 // @ts-check
 
 const path = require('path');
+const { knexSnakeCaseMappers } = require('objection');
 
 const migrations = {
-  directory: path.join(__dirname, 'server', 'migrations'),
+  directory: path.join(__dirname, 'server/migrations'),
 };
 
-const { env } = process;
+const common = {
+  migrations,
+  useNullAsDefault: true,
+  ...knexSnakeCaseMappers(),
+};
 
-module.exports = () => ({
-  production: {
-    client: env.PROD_DB_TYPE,
-    connection: {
-      user: env.PROD_DB_USER,
-      password: env.PROD_DB_PASSWORD,
-      database: env.PROD_DB_NAME,
-      host: env.PROD_DB_HOST,
-      port: env.PROD_DB_PORT,
-      database_url: env.PROD_DB_URL,
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    },
-    useNullAsDefault: true,
-    migrations,
-  },
+module.exports = {
   development: {
-    client: env.DEV_DB_TYPE,
+    client: 'sqlite3',
     connection: {
-      user: env.DEV_DB_USER,
-      password: env.DEV_DB_PASSWORD,
-      database: env.DEV_DB_NAME,
-      host: env.DEV_DB_HOST,
-      port: env.DEV_DB_PORT,
+      filename: './database.sqlite',
     },
-    useNullAsDefault: true,
-    migrations,
+    seeds: {
+      directory: path.join(__dirname, 'seeds'),
+    },
+    ...common,
   },
   test: {
-    client: env.TEST_DB_TYPE,
-    connection: {
-      filename: env.TEST_DB,
-    },
-    useNullAsDefault: true,
-    migrations,
+    client: 'sqlite3',
+    connection: ':memory:',
+    debug: false,
+    ...common,
   },
-});
+  production: {
+    client: 'pg',
+    connection: process.env.DATABASE_URL,
+    ...common,
+  },
+};

@@ -69,10 +69,6 @@ const setupLocalization = () => {
 };
 
 const addPlugins = (app) => {
-  app.register(fastifyObjectionjs, {
-    knexConfig: knexConfig()[mode],
-    models: entitiesModels,
-  });
   app.register(fastifyFormbody, { parser: qs.parse });
   app.register(fastifyReverseRoutes);
   app.register(fastifySecureSession, {
@@ -90,6 +86,10 @@ const addPlugins = (app) => {
   );
   fastifyPassport.use(new FormStrategy('form', app));
   app.register(fastifyMethodOverride);
+  app.register(fastifyObjectionjs, {
+    knexConfig: knexConfig[mode],
+    models: entitiesModels,
+  });
   app.decorate('fp', fastifyPassport);
   app.decorate('authenticate', (...args) => fastifyPassport.authenticate(
     'form',
