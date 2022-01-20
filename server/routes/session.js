@@ -7,7 +7,8 @@ export default (app) => app
     reply.render('session/new');
   })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
-    if (err) {
+    console.log(err, user);
+	if (err) {
       return app.httpErrors.internalServerError(err);
     }
 
