@@ -37,7 +37,6 @@ describe('test session', () => {
     // они понадобятся для выполнения запросов на маршруты требующие
     // предварительную аутентификацию
     const [sessionCookie] = responseSignIn.cookies;
-	console.log(responseSignIn.cookies);
     const { name, value } = sessionCookie;
     const cookie = { [name]: value };
 
