@@ -9,6 +9,7 @@ export default (app) => app
   })
   .get('/users/new', { name: 'usersNew' }, async (req, reply) => {
     const user = new app.objection.models.user();
+	console.log(user);
     reply.render('users/new', { user });
     return reply;
   })
