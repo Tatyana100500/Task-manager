@@ -7,7 +7,7 @@ export default (app) => app
     reply.render('session/new');
   })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
-    console.log(err, user);
+    console.log(err, !user);
 	if (err) {
       return app.httpErrors.internalServerError(err);
     }
@@ -18,7 +18,7 @@ export default (app) => app
         email: [{ message: i18next.t('flash.session.create.error') }],
       };
       req.flash('error', i18next.t('flash.session.create.error'));
-      return reply.redirect(app.reverse('root', { signInForm, errors }));
+      return reply.render('/session/new', { signInForm, errors });
     }
 
     await req.logIn(user);
