@@ -164,6 +164,7 @@ const addHooks = (app) => {
     if (body) {
       body.data = _.omitBy(body.data, (value) => _.isEqual(value, ''));
     }
+	console.log(body.data);
   });
 };
 
