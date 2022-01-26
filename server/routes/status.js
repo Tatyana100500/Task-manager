@@ -3,6 +3,7 @@ import i18next from 'i18next';
 export default (app) => app
   .get('/statuses', { name: 'statuses' }, async (req, reply) => {
     const statuses = await app.objection.models.status.query();
+	console.log(statuses);
     reply.render('statuses/list', { statuses });
     return reply;
   })
@@ -17,7 +18,7 @@ export default (app) => app
 
       const status = await models.status.fromJson(req.body.data);
       const user = await models.user.query().findById(id);
-
+		console.log(status, user);
       await user.$relatedQuery('status').insert(status);
 
       req.flash('info', i18next.t('flash.statuses.create.success'));
@@ -25,6 +26,7 @@ export default (app) => app
 
       return reply;
     } catch (error) {
+		console.log(error);
       req.flash('error', i18next.t('flash.statuses.create.error'));
       reply.render('statuses/new', { user: req.body.data, errors: error.data });
       return reply;
