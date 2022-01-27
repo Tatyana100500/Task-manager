@@ -3,7 +3,7 @@ import Label from './Label';
 import Status from './Status';
 import User from './User';
 import path from 'path';
-import { Model, AjvValidator } from 'objection';
+//import { Model, AjvValidator } from 'objection';
 import objectionUnique from 'objection-unique';
 
 const unique = objectionUnique({ fields: ['name'] });
