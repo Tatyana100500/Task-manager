@@ -1,6 +1,6 @@
 import { Model } from 'objection';
 import Label from './Label';
-import Status from './status';
+import Status from './Status';
 import User from './User';
 import path from 'path';
 import { Model, AjvValidator } from 'objection';
