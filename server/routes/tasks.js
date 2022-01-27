@@ -63,7 +63,7 @@ export default (app) => app
 
       const task = await models.task.fromJson(req.body.data);
       const user = await models.user.query().findById(id);
-
+		console.log(task, user);
       const labels = task.labels.map((value) => ({ id: value }));
       task.labels = labels;
 
