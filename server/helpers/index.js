@@ -12,7 +12,6 @@ export default (app) => ({
     return app.reverse(name);
   },
   getAlertClass(type) {
-	  console.log(type);
     switch (type) {
       case 'error':
         return 'danger';
