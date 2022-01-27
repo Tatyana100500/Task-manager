@@ -15,11 +15,11 @@ export default (app) => app
     try {
       const { id } = req.user;
       const { models } = app.objection;
-
+	  const { knex } = app.objection;
       const status = await models.status.fromJson(req.body.data);
       const user = await models.user.query().findById(id);
-	  console.log(status, await user.$relatedQuery('status'));
-      //await user.$relatedQuery('status').insert(status);
+	  console.log(status, knex);
+      await user.$relatedQuery('status').insert(status);
 	  
       req.flash('info', i18next.t('flash.statuses.create.success'));
       reply.redirect(app.reverse('statuses'));
