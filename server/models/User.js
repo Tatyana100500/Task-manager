@@ -44,7 +44,7 @@ export default class User extends unique(password(Model)) {
         modelClass: path.join(__dirname, 'status'),
         join: {
           from: 'users.id',
-          to: 'statuses.creator_id',
+          to: 'status.creator_id',
         },
       },
       task: {
