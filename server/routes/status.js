@@ -18,7 +18,7 @@ export default (app) => app
 
       const status = await models.status.fromJson(req.body.data);
       const user = await models.user.query().findById(id);
-	  //console.log(status, user);
+	  console.log(status, user);
       //await user.$relatedQuery('status').insert(status);
 	  
       req.flash('info', i18next.t('flash.statuses.create.success'));

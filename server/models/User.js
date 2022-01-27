@@ -38,13 +38,14 @@ export default class User extends unique(password(Model)) {
   }
 
   static get relationMappings() {
+	console.log(path.join(__dirname, 'status'));
     return {
       status: {
         relation: Model.HasManyRelation,
         modelClass: path.join(__dirname, 'status'),
         join: {
           from: 'users.id',
-          to: 'status.creator_id',
+          to: 'statuses.creator_id',
         },
       },
       task: {
