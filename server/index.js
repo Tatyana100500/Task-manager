@@ -136,6 +136,7 @@ const addPlugins = (app) => {
     const creator = await models.user.query().findById(creatorId);
     const executor = executorId ? await models.user.query().findById(executorId) : '';
     const status = await models.status.query().findById(statusId);
+	console.log(statusId, status);
     const labels = await task.$relatedQuery('labels');
 
     return {

@@ -1,4 +1,4 @@
-
+// @ts-check
 import path from 'path';
 import { Model } from 'objection';
 import objectionUnique from 'objection-unique';
