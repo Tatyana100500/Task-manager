@@ -18,7 +18,7 @@ export default (app) => app
 	  //const { knex } = app.objection;
 	  //const taskData = await req.getTaskData(task);
       const status = await models.status.fromJson(req.body.data);
-      const user = await models.user.query().findById(id).$relatedQuery('status').insert(status);
+      const user = await models.user.query().findById(id).$relatedQuery('status');
 	  console.log(status, user);
       //await user.$relatedQuery('status').insert(status);
 	  
