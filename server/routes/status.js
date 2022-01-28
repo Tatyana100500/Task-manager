@@ -15,11 +15,11 @@ export default (app) => app
     try {
       const { id } = req.user;
       const { models } = app.objection;
-	  const { knex } = app.objection;
-	  const taskData = await req.getTaskData(task);
+	  //const { knex } = app.objection;
+	  //const taskData = await req.getTaskData(task);
       const status = await models.status.fromJson(req.body.data);
       const user = await models.user.query().findById(id).$relatedQuery('status').insert(status);
-	  console.log(status, taskData, user);
+	  console.log(status, user);
       //await user.$relatedQuery('status').insert(status);
 	  
       req.flash('info', i18next.t('flash.statuses.create.success'));
