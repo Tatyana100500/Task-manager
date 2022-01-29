@@ -4,7 +4,7 @@ import i18next from 'i18next';
 export default (app) => app
   .get('/labels', { name: 'labels' }, async (req, reply) => {
     const labels = await app.objection.models.label.query();
-	console.log(labels);
+	//console.log(labels);
     reply.render('labels/list', { labels });
     return reply;
   })
@@ -17,7 +17,7 @@ export default (app) => app
       const { id } = req.user;
       const label = await app.objection.models.label.fromJson(req.body.data);
       const user = await app.objection.models.user.query().findById(id);
-		console.log(label, user);
+		//console.log(label, user);
       await user.$relatedQuery('label').insert(label);
 
       req.flash('info', i18next.t('flash.labels.create.success'));
@@ -26,7 +26,7 @@ export default (app) => app
     } catch (err) {
 		console.log(err);
       req.flash('error', i18next.t('flash.labels.create.error'));
-      reply.render('labels/new', { user: req.body.data, errors: data });
+      reply.render('labels/new', { user: req.body.data, errors: err });
       return reply;
     }
   })
