@@ -18,9 +18,9 @@ export default (app) => app
 	  //const { knex } = app.objection;
 	  //const taskData = await req.getTaskData(task);
       const status = await models.status.fromJson(req.body.data);
-      const user = await models.user.query().findById(id).$relatedQuery('status');
-	  console.log(status, user);
-      //await user.$relatedQuery('status').insert(status);
+      const user = await models.user.query().findById(id);
+	  //console.log(status, user);
+      await user.$relatedQuery('status').insert(status);
 	  
       req.flash('info', i18next.t('flash.statuses.create.success'));
       reply.redirect(app.reverse('statuses'));
@@ -36,6 +36,7 @@ export default (app) => app
   .get('/statuses/:id/edit', async (req, reply) => {
     const { id } = req.params;
     const status = await app.objection.models.status.query().findById(id);
+	cjnsole.log(status);
     reply.render('statuses/edit', { status });
     return reply;
   })
@@ -54,6 +55,7 @@ export default (app) => app
 
       return reply;
     } catch ({ data }) {
+		console.log(data);
       req.body.data.id = id;
       req.flash('error', i18next.t('flash.statuses.edit.error'));
       reply.render('statuses/edit', { status: req.body.data, errors: data });
