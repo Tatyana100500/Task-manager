@@ -32,7 +32,7 @@ export default class Label extends unique(Model) {
     return {
       owner: {
         relation: Model.BelongsToOneRelation,
-        modelClass: path.join(__dirname, 'user'),
+        modelClass: path.join(__dirname, 'User'),
         join: {
           from: 'labels.creator_id',
           to: 'users.id',
@@ -40,7 +40,7 @@ export default class Label extends unique(Model) {
       },
       task: {
         relation: Model.ManyToManyRelation,
-        modelClass: path.join(__dirname, 'task'),
+        modelClass: path.join(__dirname, 'Task'),
         join: {
           from: 'labels.id',
           through: {

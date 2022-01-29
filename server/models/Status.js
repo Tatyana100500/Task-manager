@@ -39,7 +39,7 @@ export default class Status extends unique(Model) {
       },
       task: {
         relation: Model.HasManyRelation,
-        modelClass: path.join(__dirname, 'task'),
+        modelClass: path.join(__dirname, 'Task'),
         join: {
           from: 'status.id',
           to: 'task.status_id',
