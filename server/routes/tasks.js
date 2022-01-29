@@ -75,6 +75,7 @@ export default (app) => app
       reply.redirect(app.reverse('tasks'));
       return reply;
     } catch (error) {
+		console.log(error);
       if (error instanceof UniqueViolationError) {
         error.data = { name: [{ message: 'name already in use' }] };
       }

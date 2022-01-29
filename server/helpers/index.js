@@ -28,7 +28,6 @@ export default (app) => ({
     return date.toLocaleString();
   },
   getEntityName(entity, type) {
-	  console.log(entity, type);
     const [match] = type.match(/status|executor|label/ig);
     switch (match) {
       case 'executor':
