@@ -19,8 +19,8 @@ export default (app) => app
 	  //const taskData = await req.getTaskData(task);
       const status = await models.status.fromJson(req.body.data);
       const user = await models.user.query().findById(id);
-	  //console.log(status, user);
-      await user.$relatedQuery('status').insert(status);
+	  console.log(status, user.relationMappings);
+      //await user.$relatedQuery('status').insert(status);
 	  
       req.flash('info', i18next.t('flash.statuses.create.success'));
       reply.redirect(app.reverse('statuses'));
