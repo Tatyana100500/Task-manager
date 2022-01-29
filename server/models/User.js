@@ -5,7 +5,7 @@ import objectionUnique from 'objection-unique';
 import path from 'path';
 //import encrypt from '../lib/secure.js';
 import objectionPassword from 'objection-password';
-
+const Statuses = require('./Status');
 const unique = objectionUnique({ fields: ['email'] });
 const password = objectionPassword();
 
@@ -42,7 +42,7 @@ export default class User extends unique(password(Model)) {
     return {
       status: {
         relation: Model.HasManyRelation,
-        modelClass: path.join(__dirname, 'status'),
+        modelClass: Statuses,
         join: {
           from: 'users.id',
           to: 'statuses.creator_id',
