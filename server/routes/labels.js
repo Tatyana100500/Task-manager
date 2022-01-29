@@ -23,8 +23,8 @@ export default (app) => app
       req.flash('info', i18next.t('flash.labels.create.success'));
       reply.redirect(app.reverse('labels'));
       return reply;
-    } catch ({ data }) {
-		console.log({data});
+    } catch (err) {
+		console.log(err);
       req.flash('error', i18next.t('flash.labels.create.error'));
       reply.render('labels/new', { user: req.body.data, errors: data });
       return reply;
