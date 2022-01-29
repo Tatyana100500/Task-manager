@@ -38,7 +38,6 @@ export default class User extends unique(password(Model)) {
   }
 
   static get relationMappings() {
-	console.log(path.join(__dirname, 'status'));
     return {
       status: {
         relation: Model.HasManyRelation,
@@ -50,7 +49,7 @@ export default class User extends unique(password(Model)) {
       },
       task: {
         relation: Model.HasManyRelation,
-        modelClass: path.join(__dirname, 'task'),
+        modelClass: path.join(__dirname, 'Task'),
         join: {
           from: 'users.id',
           to: 'tasks.creator_id',
@@ -58,7 +57,7 @@ export default class User extends unique(password(Model)) {
       },
       task_executor: {
         relation: Model.HasManyRelation,
-        modelClass: path.join(__dirname, 'task'),
+        modelClass: path.join(__dirname, 'Task'),
         join: {
           from: 'users.id',
           to: 'tasks.executor_id',
@@ -66,7 +65,7 @@ export default class User extends unique(password(Model)) {
       },
       label: {
         relation: Model.HasManyRelation,
-        modelClass: path.join(__dirname, 'label'),
+        modelClass: path.join(__dirname, 'Label'),
         join: {
           from: 'users.id',
           to: 'labels.creator_id',

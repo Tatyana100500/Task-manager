@@ -31,7 +31,7 @@ export default class Status extends unique(Model) {
     return {
       user: {
         relation: Model.BelongsToOneRelation,
-        modelClass: path.join(__dirname, 'user'),
+        modelClass: path.join(__dirname, 'User'),
         join: {
           from: 'statuses.creator_id',
           to: 'users.id',
