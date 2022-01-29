@@ -42,7 +42,7 @@ export default class User extends unique(password(Model)) {
     return {
       status: {
         relation: Model.HasManyRelation,
-        modelClass: 'status',
+        modelClass: path.join(__dirname, 'Status'),
         join: {
           from: 'users.id',
           to: 'statuses.creator_id',
