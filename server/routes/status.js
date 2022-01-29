@@ -3,7 +3,7 @@ import i18next from 'i18next';
 export default (app) => app
   .get('/statuses', { name: 'statuses' }, async (req, reply) => {
     const statuses = await app.objection.models.status.query();
-	console.log(statuses);
+	//console.log(statuses);
     reply.render('statuses/list', { statuses });
     return reply;
   })
@@ -15,19 +15,17 @@ export default (app) => app
     try {
       const { id } = req.user;
       const { models } = app.objection;
-	  //const { knex } = app.objection;
-	  //const taskData = await req.getTaskData(task);
       const status = await models.status.fromJson(req.body.data);
       const user = await models.user.query().findById(id);
 	  
       await user.$relatedQuery('status').insert(status);
-	  console.log(status, user);
+	  //console.log(status, user);
       req.flash('info', i18next.t('flash.statuses.create.success'));
       reply.redirect(app.reverse('statuses'));
 
       return reply;
     } catch (error) {
-		console.log(error);
+		//console.log(error);
       req.flash('error', i18next.t('flash.statuses.create.error'));
       reply.render('statuses/new', { user: req.body.data, errors: error.data });
       return reply;
@@ -36,7 +34,7 @@ export default (app) => app
   .get('/statuses/:id/edit', async (req, reply) => {
     const { id } = req.params;
     const status = await app.objection.models.status.query().findById(id);
-	cjnsole.log(status);
+	console.log(status);
     reply.render('statuses/edit', { status });
     return reply;
   })
@@ -47,7 +45,7 @@ export default (app) => app
 
       const patchForm = await models.status.fromJson(req.body.data);
       const status = await models.status.query().findById(id);
-
+		console.log(patchForm, status);
       await status.$query().update(patchForm);
 
       req.flash('info', i18next.t('flash.statuses.edit.success'));
