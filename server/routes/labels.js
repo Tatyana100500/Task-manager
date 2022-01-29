@@ -17,14 +17,14 @@ export default (app) => app
       const { id } = req.user;
       const label = await app.objection.models.label.fromJson(req.body.data);
       const user = await app.objection.models.user.query().findById(id);
-		Console.log(label, user);
+		console.log(label, user);
       await user.$relatedQuery('label').insert(label);
 
       req.flash('info', i18next.t('flash.labels.create.success'));
       reply.redirect(app.reverse('labels'));
       return reply;
     } catch ({ data }) {
-		console.log(data);
+		console.log({data});
       req.flash('error', i18next.t('flash.labels.create.error'));
       reply.render('labels/new', { user: req.body.data, errors: data });
       return reply;

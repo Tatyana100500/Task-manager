@@ -66,7 +66,7 @@ export default class Task extends Model {
     return {
       creator: {
         relation: Model.BelongsToOneRelation,
-        modelClass: path.join(__dirname, 'user'),
+        modelClass: path.join(__dirname, 'User'),
         join: {
           from: 'tasks.creator_id',
           to: 'users.id',
@@ -74,7 +74,7 @@ export default class Task extends Model {
       },
       executor: {
         relation: Model.BelongsToOneRelation,
-        modelClass: path.join(__dirname, 'user'),
+        modelClass: path.join(__dirname, 'User'),
         join: {
           from: 'tasks.executor_id',
           to: 'users.id',
@@ -82,7 +82,7 @@ export default class Task extends Model {
       },
       labels: {
         relation: Model.ManyToManyRelation,
-        modelClass: path.join(__dirname, 'label'),
+        modelClass: path.join(__dirname, 'Label'),
         join: {
           from: 'tasks.id',
           through: {
@@ -94,7 +94,7 @@ export default class Task extends Model {
       },
       status: {
         relation: Model.BelongsToOneRelation,
-        modelClass: path.join(__dirname, 'status'),
+        modelClass: path.join(__dirname, 'Status'),
         join: {
           from: 'tasks.status_id',
           to: 'statuses.id',
