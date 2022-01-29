@@ -24,9 +24,9 @@ export default (app) => app
       reply.redirect(app.reverse('labels'));
       return reply;
     } catch (err) {
-		console.log(err);
+		console.log(err.data);
       req.flash('error', i18next.t('flash.labels.create.error'));
-      reply.render('labels/new', { user: req.body.data, errors: err });
+      reply.render('labels/new', { user: req.body.data, errors: err.data });
       return reply;
     }
   })
