@@ -124,7 +124,7 @@ export default (app) => app
       const updateData = await models.task.fromJson(req.body.data);
       updateData.labels = updateData.labels.map((value) => ({ id: value }));
       updateData.id = task.id;
-
+		console.log(task, updateData);
       await knex.transaction(async (trx) => {
         await models.task.query(trx).upsertGraph(updateData, {
           relate: true,
@@ -138,6 +138,7 @@ export default (app) => app
 
       return reply;
     } catch (error) {
+		console.log(error);
       req.flash('error', i18next.t('flash.tasks.edit.error'));
       req.errors(error.data);
       req.entity('task', req.body.data);
