@@ -82,8 +82,8 @@ console.log(errors);
       }
       req.flash('error', i18next.t('flash.tasks.create.error'));
       req.entity('task', req.body.data);
-	  Rollbar.errors(error);
-	  req.errors(error.data);
+	  app.setErrorHandler(error);
+	  //reply.errors(error.data);
 	  //reply.redirect('tasks', {task: req.body.data, errors: error.data});
       reply.redirect(app.reverse('newTask'));
       return reply;
