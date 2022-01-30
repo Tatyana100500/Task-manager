@@ -46,7 +46,7 @@ export default (app) => app
     const labels = await models.label.query();
     const errors = reply.errors();
 
-    reply.render('tasks/new', {
+    reply.render('tasks', {
       task,
       executors,
       statuses,
