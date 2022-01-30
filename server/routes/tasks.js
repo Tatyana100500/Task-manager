@@ -1,6 +1,7 @@
 import { UniqueViolationError } from 'objection';
 import i18next from 'i18next';
 import _ from 'lodash';
+import Rollbar from 'rollbar';
 
 export default (app) => app
   .get('/tasks', { name: 'tasks' }, async (req, reply) => {
@@ -79,10 +80,11 @@ export default (app) => app
         error.data = { name: [{ message: 'name already in use' }] };
       }
       req.flash('error', i18next.t('flash.tasks.create.error'));
-      reply.errors(error);
+      //reply.errors(error);
+	  app.rollbar.error(error);
       req.entity('task', req.body.data);
 	  //reply.redirect('tasks', {task: req.body.data, errors: error.data});
-      reply.render('tasks/new', {task: req.body.data, errors: error.data});
+      reply.redirect('tasks', {task: req.body.data, errors: error.data});
       return reply;
     }
   })
