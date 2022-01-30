@@ -63,7 +63,6 @@ export default (app) => app
 
       const task = await models.task.fromJson(req.body.data);
       const user = await models.user.query().findById(id);
-		console.log(task, user);
       const labels = task.labels.map((value) => ({ id: value }));
       task.labels = labels;
 
@@ -82,7 +81,8 @@ export default (app) => app
       req.flash('error', i18next.t('flash.tasks.create.error'));
       req.errors(error.data);
       req.entity('task', req.body.data);
-	  reply.redirect(app.reverse('newTask'));
+	  reply.send(error);
+	  reply.redirect(app.reverse('tasks'));
       //reply.render('tasks/new', {task: req.body.data, errors: error.data});
       return reply;
     }
@@ -125,7 +125,6 @@ export default (app) => app
       const updateData = await models.task.fromJson(req.body.data);
       updateData.labels = updateData.labels.map((value) => ({ id: value }));
       updateData.id = task.id;
-		console.log(task, updateData);
       await knex.transaction(async (trx) => {
         await models.task.query(trx).upsertGraph(updateData, {
           relate: true,
