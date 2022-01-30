@@ -82,7 +82,7 @@ export default (app) => app
       req.flash('error', i18next.t('flash.tasks.create.error'));
       req.errors(error.data);
       req.entity('task', req.body.data);
-      reply.redirect(app.reverse('tasks'));
+      reply.render('tasks', {erors: error.data});
       return reply;
     }
   })
