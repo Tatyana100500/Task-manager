@@ -40,6 +40,7 @@ export default (app) => app
     return reply;
   })
   .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
+	  console.log(req.body)
     const { models } = app.objection;
     const task = reply.entity('task') || new app.objection.models.task();
     const executors = await models.user.query();
@@ -80,12 +81,9 @@ export default (app) => app
         error.data = { name: [{ message: 'name already in use' }] };
       }
       req.flash('error', i18next.t('flash.tasks.create.error'));
-      //reply.errors(error);
-	  app.rollbar.error(error);
-	  console.log(app.Rollbar(error));
       req.entity('task', req.body.data);
 	  //reply.redirect('tasks', {task: req.body.data, errors: error.data});
-      reply.redirect(app.reverse('tasks', {task: req.body.data, errors: error.data}));
+      reply.redirect(app.reverse('newTask', {task: req.body.data, errors: error.data}));
       return reply;
     }
   })

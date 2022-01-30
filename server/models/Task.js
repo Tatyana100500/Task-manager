@@ -7,7 +7,6 @@ import { Model, AjvValidator } from 'objection';
 import objectionUnique from 'objection-unique';
 
 const unique = objectionUnique({ fields: ['name'] });
-console.log(AjvValidator);
 export default class Task extends Model {
   static get tableName() {
     return 'tasks';
