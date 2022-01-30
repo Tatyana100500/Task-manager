@@ -46,7 +46,7 @@ export default (app) => app
     const labels = await models.label.query();
     const errors = reply.errors();
 
-    reply.render('tasks', {
+    reply.render('/tasks/new', {
       task,
       executors,
       statuses,
@@ -82,7 +82,8 @@ export default (app) => app
       req.flash('error', i18next.t('flash.tasks.create.error'));
       req.errors(error.data);
       req.entity('task', req.body.data);
-	  reply.redirect(app.reverse('newTask'));
+	  app.reverse('newTask');
+	  reply.redirect('tasks');
       //reply.render('tasks/new', {task: req.body.data, errors: error.data});
       return reply;
     }
