@@ -183,6 +183,7 @@ const setErrorHandler = (app) => {
         reply.send(html);
       });
     } catch (error) {
+		console.log(error);
       reply.send(error);
     }
   });
