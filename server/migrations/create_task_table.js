@@ -10,6 +10,7 @@ exports.up = (knex) => (
       table.integer('performerId');
       table.integer('statusId');
       table.varchar('labels');
+	  table.timestamp('updated_at').defaultTo(knex.fn.now());
     })
   );
   
