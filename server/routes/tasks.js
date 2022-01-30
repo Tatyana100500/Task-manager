@@ -80,9 +80,9 @@ export default (app) => app
         error.data = { name: [{ message: 'name already in use' }] };
       }
       req.flash('error', i18next.t('flash.tasks.create.error'));
-      reply.errors(error.data);
+      req.errors(error.data);
       req.entity('task', req.body.data);
-	  reply.redirect(app.reverse('tasks'));
+	  reply.redirect(app.reverse('newTask'));
       //reply.render('tasks/new', {task: req.body.data, errors: error.data});
       return reply;
     }
