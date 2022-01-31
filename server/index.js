@@ -185,9 +185,6 @@ const setErrorHandler = (app) => {
         reply.send(html);
       });
     } catch (error) {
-		if (error.validation) {
-			reply.status(400).send(new Error('validation failed'))
-		 }
 		console.log(error);
       reply.send(error);
     }
