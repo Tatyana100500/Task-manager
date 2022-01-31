@@ -43,6 +43,11 @@ export default (app) => app
 	
 	const errors = reply.errors();
 	console.log(reply.errors(), errors);
+	if(errors) {
+		console.log(errors);
+		reply.redirect(app.reverse('tasks'));
+      	return reply;
+	}
     const { models } = app.objection;
     const task = reply.entity('task') || new app.objection.models.task();
     const executors = await models.user.query();
