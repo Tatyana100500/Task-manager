@@ -83,7 +83,7 @@ export default (app) => app
         error.data = { name: [{ message: 'name already in use' }] };
       }
       req.flash('error', i18next.t('flash.tasks.create.error'));
-	  req.errors(error.data);
+	  reply.errors(error.data);
       req.entity('task', req.body.data);
 	  
 	  reply.render('tasks/new', {errors: error.data});
