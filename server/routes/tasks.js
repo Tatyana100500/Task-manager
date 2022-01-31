@@ -43,11 +43,6 @@ export default (app) => app
 	
 	const errors = reply.errors();
 	console.log(reply.errors(), errors);
-	if(errors) {
-		console.log(errors);
-		reply.redirect(app.reverse('tasks'));
-      	return reply;
-	}
     const { models } = app.objection;
     const task = reply.entity('task') || new app.objection.models.task();
     const executors = await models.user.query();
@@ -89,7 +84,7 @@ export default (app) => app
 	  req.errors(error.data);
       req.entity('task', req.body.data);
 	  
-	  reply.redirect('tasks/new', {errors: error.data});
+	  reply.redirect('tasks', {errors: error.data});
       //reply.render(app.reverse('newTask', {task: req.body.data, errors: error.data}));
       return reply;
     }
