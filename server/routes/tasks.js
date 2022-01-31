@@ -81,10 +81,8 @@ console.log(errors);
         error.data = { name: [{ message: 'name already in use' }] };
       }
       req.flash('error', i18next.t('flash.tasks.create.error'));
-      //req.entity('task', req.body.data);
-	  console.log(app.setErrorHandler(error));
-	  app.setErrorHandler(error);
-	  //reply.errors(error.data);
+      req.entity('task', req.body.data);
+	  req.errors(error.data);
 	  //reply.redirect('tasks', {task: req.body.data, errors: error.data});
       reply.redirect(app.reverse('newTask', {task: req.body.data, errors: error.data}));
       return reply;
