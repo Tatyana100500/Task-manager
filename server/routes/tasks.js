@@ -40,16 +40,13 @@ export default (app) => app
     return reply;
   })
   .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
-	  console.log(reply.errors(), reply.entity('task'));
+	  console.log(reply.errors());
 	const errors = reply.errors();
     const { models } = app.objection;
     const task = reply.entity('task') || new app.objection.models.task();
     const executors = await models.user.query();
     const statuses = await models.status.query();
     const labels = await models.label.query();
-    
-	console.log(task, executors, statuses, labels)
-	console.log(errors);
     reply.render('/tasks/new', {
       task,
       executors,
@@ -78,15 +75,15 @@ export default (app) => app
       reply.redirect(app.reverse('tasks'));
       return reply;
     } catch (error) {
-		console.log(error, req.body);
+		console.log(error);
       if (error instanceof UniqueViolationError) {
         error.data = { name: [{ message: 'name already in use' }] };
       }
       req.flash('error', i18next.t('flash.tasks.create.error'));
-	  reply.errors(error.data);
+	  req.errors(error.data);
       req.entity('task', req.body.data);
 	  
-	  reply.render('tasks/new', {errors: error.data});
+	  reply.redirect('tasks/new', {errors: error.data});
       //reply.render(app.reverse('newTask', {task: req.body.data, errors: error.data}));
       return reply;
     }
