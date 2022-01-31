@@ -40,7 +40,7 @@ export default (app) => app
     return reply;
   })
   .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
-	  console.log(reply.errors());
+	  console.log(reply.errors(), reply.entity('task'));
 	const errors = reply.errors();
     const { models } = app.objection;
     const task = reply.entity('task') || new app.objection.models.task();
@@ -78,7 +78,7 @@ export default (app) => app
       reply.redirect(app.reverse('tasks'));
       return reply;
     } catch (error) {
-		console.log(error, req.body.data);
+		console.log(error, req.body);
       if (error instanceof UniqueViolationError) {
         error.data = { name: [{ message: 'name already in use' }] };
       }
