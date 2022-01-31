@@ -120,9 +120,11 @@ const addPlugins = (app) => {
 
   app.decorateReply('entity', (type) => {
     const data = app.container.has(type)
+	
       ? app.container.get(type)
       : [];
     app.container.delete(type);
+	console.log(data);
     return data;
   });
 
