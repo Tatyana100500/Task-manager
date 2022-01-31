@@ -76,18 +76,14 @@ export default (app) => app
       reply.redirect(app.reverse('tasks'));
       return reply;
     } catch (error) {
-		console.log(error instanceof ValidationError, Rollbar(error));
       if (error instanceof UniqueViolationError) {
         error.data = { name: [{ message: 'name already in use' }] };
       }
-	  if (error instanceof ValidationError) {
-		reply.status(400).send(new Error(error));
-	 }
       req.flash('error', i18next.t('flash.tasks.create.error'));
 	  req.errors(error.data);
       req.entity('task', req.body.data);
 	  
-	  reply.redirect('tasks', {errors: error.data});
+	  reply.redirect('tasks/new', {errors: error.data});
       //reply.render(app.reverse('newTask', {task: req.body.data, errors: error.data}));
       return reply;
     }
