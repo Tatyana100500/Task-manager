@@ -84,7 +84,7 @@ export default (app) => app
 	  req.errors(error.data);
       req.entity('task', req.body.data);
 	  
-	  reply.redirect('/tasks', {errors: error.data});
+	  reply.redirect('tasks/new', {errors: error.data});
       //reply.render(app.reverse('newTask', {task: req.body.data, errors: error.data}));
       return reply;
     }
