@@ -70,7 +70,6 @@ export default (app) => app
 
       await knex.transaction(async (trx) => {
 		  console.log(trx);
-		  console.log(await user.$relatedQuery('task', trx).insertGraph(task, { relate: ['labels'] }));
         await user.$relatedQuery('task', trx).insertGraph(task, { relate: ['labels'] });
       });
 	  
