@@ -41,8 +41,8 @@ export default (app) => app
   })
   .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
 	
-	const errors = req.errors();
-	console.log(errors);
+	const errors = reply.errors();
+	console.log(reply);
     const { models } = app.objection;
     const task = reply.entity('task') || new app.objection.models.task();
     const executors = await models.user.query();
