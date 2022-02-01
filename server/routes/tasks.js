@@ -42,7 +42,7 @@ export default (app) => app
   .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
 	
 	const errors = reply.errors();
-	console.log(reply.errors());
+	console.log(errors);
     const { models } = app.objection;
     const task = reply.entity('task') || new app.objection.models.task();
     const executors = await models.user.query();
@@ -86,7 +86,7 @@ export default (app) => app
       req.entity('task', req.body.data);
 	  
 	  //reply.redirect('tasks/new', {errors: error.data});
-      reply.render(app.reverse('tasks', {errors: error.data}));
+      reply.render(app.reverse('newTask', {errors: error.data}));
       return reply;
     }
   })
