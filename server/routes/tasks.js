@@ -1,4 +1,4 @@
-import { UniqueViolationError } from 'objection';
+import { UniqueViolationError, ValidationError } from 'objection';
 import i18next from 'i18next';
 import _ from 'lodash';
 import Rollbar from 'rollbar';
@@ -69,7 +69,7 @@ export default (app) => app
       task.labels = labels;
 
       await knex.transaction(async (trx) => {
-		  console.log(trx);
+		  
         await user.$relatedQuery('task', trx).insertGraph(task, { relate: ['labels'] });
       });
 	  
@@ -77,6 +77,7 @@ export default (app) => app
       reply.redirect(app.reverse('tasks'));
       return reply;
     } catch (error) {
+		console.log(error instanceof ValidationError);
       if (error instanceof UniqueViolationError) {
         error.data = { name: [{ message: 'name already in use' }] };
       }
