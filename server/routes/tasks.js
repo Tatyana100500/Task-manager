@@ -68,10 +68,10 @@ export default (app) => app
       const labels = task.labels.map((value) => ({ id: value }));
       task.labels = labels;
 
-      await knex.transaction(async (trx) => {
+      const data = await knex.transaction(async (trx) => {
         await user.$relatedQuery('task', trx).insertGraph(task, { relate: ['labels'] });
       });
-
+	  console.log(data);
       req.flash('info', i18next.t('flash.tasks.create.success'));
       reply.redirect(app.reverse('tasks'));
       return reply;
