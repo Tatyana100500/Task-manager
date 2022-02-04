@@ -57,7 +57,7 @@ export default (app) => app
     });
     return reply;
   })
-  .post('/tasks', { name: 'tasks' }, async (req, reply) => {
+  .post('/tasks', async (req, reply) => {
     try {
       const { id } = req.user;
       const { models } = app.objection;
