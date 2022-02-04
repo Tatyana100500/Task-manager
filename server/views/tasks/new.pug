@@ -9,7 +9,7 @@ block content
     .form-group
         label(for="data_description")= t('views.tasks.new.description')
         textarea.form-control(id="data_description" name="data[description]" rows="3")
-    +select(task, statuses, 'statusId', t('views.tasks.new.status'), errors)
-    +select(task, executors, 'executorId', t('views.tasks.new.executor'), errors)
-    +select(task, labels, 'labels', t('views.tasks.new.labels'), errors)(multiple="multiple")
+    +select(task, statuses = [], 'statusId', t('views.tasks.new.status'), errors)
+    +select(task, executors =[], 'executorId', t('views.tasks.new.executor'), errors)
+    +select(task, labels = [], 'labels', t('views.tasks.new.labels'), errors)(multiple="multiple")
     +submit()(value=t('views.tasks.new.submit'))
