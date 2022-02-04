@@ -1,4 +1,4 @@
-//import { UniqueViolationError, ValidationError } from 'objection';
+import { UniqueViolationError } from 'objection';
 import i18next from 'i18next';
 import _ from 'lodash';
 //import Rollbar from 'rollbar';
@@ -163,4 +163,3 @@ export default (app) => app
 
     reply.redirect(app.reverse('tasks'));
   });
-  
