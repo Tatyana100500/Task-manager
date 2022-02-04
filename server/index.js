@@ -1,4 +1,3 @@
-
 // @ts-check
 import path from 'path';
 import fastify from 'fastify';
@@ -18,10 +17,8 @@ import Rollbar from 'rollbar';
 import qs from 'qs';
 import _ from 'lodash';
 import ru from './locales/ru.js';
-
 // @ts-ignore
 import webpackConfig from '../webpack.config.babel.js';
-
 import addRoutes from './routes/index.js';
 import getHelpers from './helpers/index.js';
 import knexConfig from '../knexfile';
@@ -31,7 +28,7 @@ import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
 const isDevelopment = mode === 'development';
-dotenv.config( {debug: true} );
+dotenv.config({ debug: true });
 
 const setupViews = (app) => {
   const { devServer } = webpackConfig;
@@ -51,7 +48,6 @@ const setupViews = (app) => {
   });
 
   app.decorateReply('render', function render(viewPath, locals) {
-    //console.log(viewPath, locals)
     this.view(viewPath, { ...locals, reply: this });
   });
 };
@@ -119,12 +115,8 @@ const addPlugins = (app) => {
   });
 
   app.decorateReply('entity', (type) => {
-    const data = app.container.has(type)
-	
-      ? app.container.get(type)
-      : [];
+    const data = app.container.has(type) ? app.container.get(type) : [];
     app.container.delete(type);
-	console.log(data);
     return data;
   });
 
@@ -138,7 +130,6 @@ const addPlugins = (app) => {
     const creator = await models.user.query().findById(creatorId);
     const executor = executorId ? await models.user.query().findById(executorId) : '';
     const status = await models.status.query().findById(statusId);
-	//console.log(statusId, status);
     const labels = await task.$relatedQuery('labels');
 
     return {
@@ -185,7 +176,6 @@ const setErrorHandler = (app) => {
         reply.send(html);
       });
     } catch (error) {
-		console.log(error);
       reply.send(error);
     }
   });

@@ -1,12 +1,10 @@
-//import { Model } from 'objection';
-import Label from './Label';
-import Status from './Status';
-import User from './User';
 import path from 'path';
 import { Model, AjvValidator } from 'objection';
-import objectionUnique from 'objection-unique';
-
-const unique = objectionUnique({ fields: ['name'] });
+//import objectionUnique from 'objection-unique';
+//import Label from './Label';
+//import Status from './Status';
+//import User from './User';
+//const unique = objectionUnique({ fields: ['name'] });
 export default class Task extends Model {
   static get tableName() {
     return 'tasks';

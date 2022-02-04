@@ -1,5 +1,6 @@
 import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+
 const webpack = require('webpack');
 
 const mode = process.env.NODE_ENV || 'development';
@@ -42,5 +43,5 @@ module.exports = {
     jQuery: 'jquery',
     'popper.js': ['Popper', 'window.Popper'],
   }),
-],
+  ],
 };

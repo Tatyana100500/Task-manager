@@ -1,7 +1,7 @@
-import { UniqueViolationError, ValidationError } from 'objection';
+//import { UniqueViolationError, ValidationError } from 'objection';
 import i18next from 'i18next';
 import _ from 'lodash';
-import Rollbar from 'rollbar';
+//import Rollbar from 'rollbar';
 
 export default (app) => app
   .get('/tasks', { name: 'tasks' }, async (req, reply) => {
@@ -40,9 +40,7 @@ export default (app) => app
     return reply;
   })
   .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
-	
 	const errors = reply.errors();
-	console.log(errors);
     const { models } = app.objection;
     const task = reply.entity('task') || new app.objection.models.task();
     const executors = await models.user.query();
@@ -77,7 +75,6 @@ export default (app) => app
       reply.redirect(app.reverse('tasks'));
       return reply;
     } catch (error) {
-		console.log(error);
       if (error instanceof UniqueViolationError) {
         error.data = { name: [{ message: 'name already in use' }] };
       }
@@ -85,15 +82,12 @@ export default (app) => app
 	  req.errors(error.data);
       req.entity('task', req.body.data);
 	  reply.render('tasks/new', { task: req.body.data, errors: error.data });
-	  //reply.redirect('tasks/new', {errors: error.data});
-      //reply.render(app.reverse('newTask', {errors: error.data}));
       return reply;
     }
   })
   .get('/tasks/:id', async (req, reply) => {
     const { id } = req.params;
     const task = await app.objection.models.task.query().findById(id);
-
     const taskData = await req.getTaskData(task);
     reply.render('tasks/view', { task: taskData });
     return reply;
@@ -141,7 +135,6 @@ export default (app) => app
 
       return reply;
     } catch (error) {
-		console.log(error);
       req.flash('error', i18next.t('flash.tasks.edit.error'));
       req.errors(error.data);
       req.entity('task', req.body.data);
@@ -170,3 +163,4 @@ export default (app) => app
 
     reply.redirect(app.reverse('tasks'));
   });
+  

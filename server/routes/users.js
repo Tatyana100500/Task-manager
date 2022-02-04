@@ -5,12 +5,10 @@ export default (app) => app
   .get('/users', { name: 'users' }, async (req, reply) => {
     const users = await app.objection.models.user.query();
     reply.render('users/list', { users });
-	//console.log(users, reply);
     return reply;
   })
   .get('/users/new', { name: 'usersNew' }, async (req, reply) => {
     const user = new app.objection.models.user();
-	//console.log(user);
     reply.render('users/new', { user });
     return reply;
   })
@@ -95,3 +93,4 @@ export default (app) => app
 
     return reply;
   });
+  

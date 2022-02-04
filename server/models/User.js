@@ -3,9 +3,7 @@
 import { Model } from 'objection';
 import objectionUnique from 'objection-unique';
 import path from 'path';
-//import encrypt from '../lib/secure.js';
 import objectionPassword from 'objection-password';
-//const Statuses = require('./Status');
 const unique = objectionUnique({ fields: ['email'] });
 const password = objectionPassword();
 
