@@ -4,11 +4,11 @@ import i18next from 'i18next';
 
 export default (app) => app
   .get('/session/new', { name: 'newSession' }, (req, reply) => {
-	const signInForm = {};
-	reply.render('session/new', { signInForm });
+    const signInForm = {};
+    reply.render('session/new', { signInForm });
   })
   .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
-	if (err) {
+    if (err) {
       return app.httpErrors.internalServerError(err);
     }
 

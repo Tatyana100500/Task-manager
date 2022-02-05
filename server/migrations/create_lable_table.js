@@ -2,7 +2,7 @@
 
 exports.up = (knex) => (
   knex.schema.createTable('labels', (table) => {
-	table.increments('id').primary();
+    table.increments('id').primary();
     table.integer('creatorId');
     table.string('name');
     table.timestamp('created_at').defaultTo(knex.fn.now());

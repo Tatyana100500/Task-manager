@@ -1,7 +1,6 @@
 import { UniqueViolationError } from 'objection';
 import i18next from 'i18next';
 import _ from 'lodash';
-//import Rollbar from 'rollbar';
 
 export default (app) => app
   .get('/tasks', { name: 'tasks' }, async (req, reply) => {
@@ -40,7 +39,7 @@ export default (app) => app
     return reply;
   })
   .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
-	const errors = reply.errors();
+    const errors = reply.errors();
     const { models } = app.objection;
     const task = reply.entity('task') || new app.objection.models.task();
     const executors = await models.user.query();
@@ -67,10 +66,8 @@ export default (app) => app
       task.labels = labels;
 
       await knex.transaction(async (trx) => {
-		  
         await user.$relatedQuery('task', trx).insertGraph(task, { relate: ['labels'] });
       });
-	  
       req.flash('info', i18next.t('flash.tasks.create.success'));
       reply.redirect(app.reverse('tasks'));
       return reply;

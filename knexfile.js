@@ -8,25 +8,25 @@ const migrations = {
 
 module.exports = {
   development: {
-	client: 'sqlite3',
-	connection: {
-	  filename: './database.sqlite',
-	},
-	useNullAsDefault: true,
-	migrations,
+    client: 'sqlite3',
+    connection: {
+      filename: './database.sqlite',
+    },
+    useNullAsDefault: true,
+    migrations,
   },
   test: {
-	client: 'sqlite3',
-	connection: ':memory:',
-	useNullAsDefault: true,
-	migrations,
+    client: 'sqlite3',
+    connection: ':memory:',
+    useNullAsDefault: true,
+    migrations,
   },
   production: {
-	client: 'sqlite3',
-	connection: {
-	  filename: './database.sqlite',
-	},
-	  useNullAsDefault: true,
-	  migrations,
+    client: 'sqlite3',
+    connection: {
+      filename: './database.sqlite',
+    },
+    useNullAsDefault: true,
+    migrations,
   },
 };

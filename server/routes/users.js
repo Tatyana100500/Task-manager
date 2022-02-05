@@ -93,4 +93,3 @@ export default (app) => app
 
     return reply;
   });
-  

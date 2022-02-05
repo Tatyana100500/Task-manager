@@ -4,6 +4,7 @@ import { Model } from 'objection';
 import objectionUnique from 'objection-unique';
 import path from 'path';
 import objectionPassword from 'objection-password';
+
 const unique = objectionUnique({ fields: ['email'] });
 const password = objectionPassword();
 
