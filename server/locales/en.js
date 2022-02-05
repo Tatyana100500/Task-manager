@@ -8,10 +8,10 @@ export default {
           logIn: 'Login',
           title: 'Taskmanager',
           header: 'TaskManager',
-            footer: {
-              text: 'Chernishova Tatyana',
-              ghLink: 'My Github',
-            },
+          footer: {
+            text: 'Chernishova Tatyana',
+            ghLink: 'My Github',
+          },
         },
         inner: {
           logout: 'Logout',
@@ -170,4 +170,3 @@ export default {
     },
   },
 };
-  

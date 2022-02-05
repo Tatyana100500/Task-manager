@@ -1,5 +1,6 @@
 import path from 'path';
 import { Model, AjvValidator } from 'objection';
+
 export default class Task extends Model {
   static get tableName() {
     return 'tasks';
