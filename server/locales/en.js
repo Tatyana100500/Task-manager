@@ -51,10 +51,12 @@ export default {
             error: 'User edit error',
             notAllowed: 'Not allowed for current user',
           },
-          firstName: 'Firstname',
-          lastName: 'Lastname',
-          email: 'Email',
-          password: 'Password',
+		  new: {
+            firstName: 'Firstname',
+            lastName: 'Lastname',
+            email: 'Email',
+            password: 'Password',
+		  },
           add: {
             success: 'Successful registration',
             error: 'Invalid data',
