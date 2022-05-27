@@ -23,9 +23,9 @@ module.exports = {
       },
       welcome: {
         index: {
-          hello: 'Привет от Хекслета!',
-          description: 'Практические курсы по программированию',
-          more: 'Узнать Больше',
+          hello: 'Приветствую Вас!',
+          description: 'Учебный проект "Менеджер задач"',
+          more: 'Hexlet',
         },
       },
       users: {
